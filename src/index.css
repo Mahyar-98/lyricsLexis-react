@@ -1,25 +1,45 @@
+/* import Roboto Mono font */
+@import url("https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,100..900;1,100..900&family=Farsan&family=Kdam+Thmor+Pro&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
 :root {
+  --light-font-color: #213547;
+  --light-bg-color: #ffffff;
+  --light-header-color: #f5f5f5;
+  --light-border-color: var(--light-font-color);
+  --light-hover-color: rgba(0, 0, 0, 0.05);
+  --light-yellow-font-color: #a9792b;
+  --light-yellow-bg-color: #ffcc66;
+  --light-post-link-color: #4e6bff;
+
+  --dark-font-color: #ffffff;
+  --dark-bg-color: #111827;
+  --dark-header-color: #0e1320;
+  --dark-border-color: var(--dark-font-color);
+  --dark-hover-color: rgba(0, 0, 0, 0.4);
+  --dark-yellow-font-color: var(--light-yellow-bg-color);
+  --dark-yellow-bg-color: var(--light-yellow-font-color);
+  --dark-post-link-color: #72aaff;
+
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  --left-border-color: #ccc;
+  --left-border: 2px solid var(--left-border-color);
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--dark-font-color);
+  background-color: var(--dark-bg-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
 }
 
 body {
@@ -30,39 +50,139 @@ body {
   min-height: 100vh;
 }
 
+#root {
+  width: 100%;
+}
+
+div.layout {
+  --font-color: var(--light-font-color);
+  --bg-color: var(--light-bg-color);
+  --header-color: var(--light-header-color);
+  --border-color: var(--light-border-color);
+  --hover-color: var(--light-hover-color);
+  --yellow-font-color: var(--light-yellow-font-color);
+  --yellow-bg-color: var(--light-yellow-bg-color);
+  --post-link-color: var(--light-post-link-color);
+
+  color: var(--font-color);
+  background-color: var(--bg-color);
+}
+div.layout.dark {
+  --font-color: var(--dark-font-color);
+  --bg-color: var(--dark-bg-color);
+  --header-color: var(--dark-header-color);
+  --border-color: var(--dark-border-color);
+  --hover-color: var(--dark-hover-color);
+  --yellow-font-color: var(--dark-yellow-font-color);
+  --yellow-bg-color: var(--dark-yellow-bg-color);
+  --post-link-color: var(--dark-post-link-color);
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  margin: 0;
+}
+
+h2 {
+  margin: 0;
+}
+
+p {
+  font-size: 0.9rem;
 }
 
 button {
+  color: var(--font-color);
+  background-color: var(--bg-color);
+  border: 1px solid var(--font-color);
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  font-size: 0.9em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  color: var(--bg-color);
+  background-color: var(--font-color);
+  /* opacity: 0.8; */
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+button.tag {
+  font-size: 0.75em;
+  transition: transform 0.3s;
+  margin-left: 0.9em;
+}
+button.tag:hover {
+  color: var(--font-color);
+  background-color: var(--bg-color);
+  transform: scale(1.1);
+}
+button.tag.active {
+  color: var(--bg-color);
+  background-color: var(--font-color);
+}
+
+.btn {
+  padding: 0.6em 1.2em;
+}
+
+button > a {
+  display: block;
+  padding: 0.6em 1.2em;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a.underlined,
+.post-body a {
+  text-decoration: underline;
+}
+.post-body a {
+  color: var(--post-link-color);
+}
+a.underlined:hover,
+a.hover-opacity:hover,
+.post-body a:hover {
+  opacity: 0.8;
+}
+
+svg {
+  fill: var(--yellow-font-color);
+}
+
+li {
+  list-style-type: none;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-right: 1em;
+  padding-left: 1em;
+}
+.container-small {
+  max-width: 750px;
+}
+
+.title {
+  background-color: var(--yellow-bg-color);
+  padding: 0.5em 0;
+  margin-bottom: 2em;
+  text-align: center;
+}
+
+form small {
+  color: red;
+}
+
+@media (min-width: 600px) {
+  .container {
+    padding-right: 2em;
+    padding-left: 2em;
   }
 }

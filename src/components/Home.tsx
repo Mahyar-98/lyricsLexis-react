@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -46,6 +47,12 @@ const Home = () => {
     setQuery((searchData.song + " " + searchData.artist).trim());
   };
 
+  const handleWordClick = (word: string) => {
+    fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word)
+    .then(res => res.json())
+    .then(data => console.log(data))
+  }
+
   return (
     <>
       <form action="#" method="GET" onSubmit={handleSearch}>
@@ -61,21 +68,29 @@ const Home = () => {
             {song.title + " by " + song.author}
             <img src={song.thumbnail.genius} alt="" />
             {song.lyrics
-              .split(/\n\n/) // Split based on consecutive line breaks
-              .map((piece, index) => (
-                <div key={index}>
-                  {piece.split("\n").map((line, lineIndex) => (
-                    <p key={lineIndex}>
-                      {line.match(/[a-zA-Z']+/g)?.map((word, wordIndex) => (
-                        <span key={wordIndex} onClick={() => console.log(word)}>
-                          {word}{" "}
-                        </span>
-                      ))}
-                    </p>
-                  ))}
-                  <p>&nbsp;</p> {/* Add empty line between pieces */}
-                </div>
-              ))}
+  .split(/\n\n/) // Split based on consecutive line breaks
+  .map((piece, index) => (
+    <div key={index}>
+      {piece.split("\n").map((line, lineIndex) => (
+        <p key={lineIndex}>
+          {line.split(/(\b[\w'-]+\b|[^\w\s'])/).map((segment, segmentIndex) => {
+            const isWord = /\b[\w'-]+\b/.test(segment.trim());
+            return (
+              <React.Fragment key={segmentIndex}>
+                {isWord ? (
+                  <span onClick={() => handleWordClick(segment)}>{segment}</span>
+                ) : (
+                  segment
+                )}
+              </React.Fragment>
+            );
+          })}
+        </p>
+      ))}
+      <p key={`empty-${index}`}>&nbsp;</p> {/* Add unique key for empty line */}
+    </div>
+  ))}
+
 
             <p>...</p>
             <p>
