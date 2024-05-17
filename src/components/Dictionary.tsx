@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Pronunciation {
   text: string;
@@ -38,7 +38,7 @@ const Dictionary = ({ word }: { word: string | null }) => {
   const [meanings, setMeanings] = useState<WordData[] | null>(null);
   useEffect(() => {
     if (word) {
-      fetch("http://localhost:3000/api/dictionary/" + word)
+      fetch(import.meta.env.VITE_BACKEND_URL + "/api/dictionary/" + word)
         .then((res) => res.json())
         .then((data) => setMeanings(data));
     }
