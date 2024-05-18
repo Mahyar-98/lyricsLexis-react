@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
 interface SignInData {
   email: string;
@@ -13,6 +13,7 @@ const SignIn = () => {
   });
   const [errors, setErrors] = useState<Partial<SignInData>>({});
   const navigate = useNavigate();
+  const { setLoggedIn } = useOutletContext(); //TODO: add the type
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,25 +53,32 @@ const SignIn = () => {
     return isValid;
   };
 
-  const handleSignIn = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSignIn = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateSignUp()) {
-      fetch(import.meta.env.VITE_BACKEND_URL + "/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(signInData),
-      })
-        .then((res) => {
-          if (res.ok) {
-            // Redirect to homepage
-            navigate("/");
-          } else {
-            console.error("Error: ", res.status);
-          }
-        })
-        .catch((err) => console.error("Error: ", err));
+      try {
+        const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/signin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(signInData),
+        });
+        if (response.ok) {
+          const { token } = await response.json();
+          // Store token in local storage
+          localStorage.setItem("token", token);
+          setLoggedIn(true);
+          // Redirect to homepage
+          navigate("/");
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.message);
+        }
+      } catch (error: unknown) { // TODO: update the error type
+        console.error("Error: ", error.message);
+        // Handle error (e.g., display error message to the user)
+      }
     }
   };
 
@@ -86,6 +94,9 @@ const SignIn = () => {
         {errors.password && <small className="error">{errors.password}</small>}
         <button>Sign In</button>
       </form>
+      <p>
+        Don't have an account? Click <Link to="/signup">here</Link> to sign up
+      </p>
     </>
   );
 };

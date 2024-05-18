@@ -1,11 +1,29 @@
 import "../styles/layout.css";
-import { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 const Layout = () => {
   const [loading, setLoading] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+    // UseEffect to check if token is present when component mounts
+    useEffect(() => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        setLoggedIn(true); // Set logged-in state to true if token is present
+      }
+    }, []);
+
+    const handleSignOut = () => {
+      // Clear the authentication token from local storage
+      localStorage.removeItem("token");
+      // Update the logged-in state to false
+      setLoggedIn(false);
+      // Redirect to the sign-in page or any other appropriate page
+      navigate("/signin");
+    };
 
   return (
     <div className="layout">
@@ -26,24 +44,24 @@ const Layout = () => {
                 <Link to="/">home</Link>
               </li>
               <li>
-                <Link to="about">about</Link>
+                <Link to="/about">about</Link>
               </li>
               {!loggedIn ? (
                 <>
                   <li>
-                    <Link to="signin">sign in</Link>
+                    <Link to="/signin">sign in</Link>
                   </li>
                   <li>
-                    <Link to="signup">sign up</Link>
+                    <Link to="/signup">sign up</Link>
                   </li>
                 </>
               ) : (
                 <>
                   <li>
-                    <Link to="contact">your account</Link>
+                    <Link to="/account">your account</Link>
                   </li>
                   <li>
-                    <Link to="contact">sign out</Link>
+                    <button onClick={handleSignOut}>sign out</button>
                   </li>
                 </>
               )}
@@ -113,7 +131,7 @@ const Layout = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="contact">
+                  <button onClick={handleSignOut}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512"
@@ -121,7 +139,7 @@ const Layout = () => {
                       <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" />
                     </svg>
                     <p>sign out</p>
-                  </Link>
+                  </button>
                 </li>
               </>
             )}
@@ -137,7 +155,7 @@ const Layout = () => {
             <h2>The page is loading...</h2>
           </div>
         ) : (
-          <Outlet />
+          <Outlet context={{ loggedIn, setLoggedIn }} />
         )}
       </main>
       <footer>

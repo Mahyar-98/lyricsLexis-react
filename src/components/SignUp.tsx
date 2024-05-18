@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface SignUpData {
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
   confirm_password: string;
@@ -9,6 +11,8 @@ interface SignUpData {
 
 const SignUp = () => {
   const [signUpData, setSignUpData] = useState<SignUpData>({
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
     confirm_password: "",
@@ -27,6 +31,16 @@ const SignUp = () => {
   const validateSignUp = () => {
     let isValid = true;
     const newErrors: Partial<SignUpData> = {};
+
+    if (!signUpData.first_name.trim()) {
+      newErrors.first_name = "Your first name is required";
+      isValid = false;
+    }
+
+    if (!signUpData.last_name.trim()) {
+      newErrors.last_name = "Your last name is required";
+      isValid = false;
+    }
 
     if (!signUpData.email.trim()) {
       newErrors.email = "Your email address is required";
@@ -88,6 +102,16 @@ const SignUp = () => {
     <>
       <p>Please sign up:</p>
       <form action="" onSubmit={handleSignUp}>
+        <label htmlFor="first_name">First Name: </label>
+        <input type="text" name="first_name" onChange={handleInputChange} />
+        {errors.first_name && (
+          <small className="error">{errors.first_name}</small>
+        )}
+        <label htmlFor="last_name">Last Name: </label>
+        <input type="text" name="last_name" onChange={handleInputChange} />
+        {errors.last_name && (
+          <small className="error">{errors.last_name}</small>
+        )}
         <label htmlFor="email">Email Address: </label>
         <input type="text" name="email" onChange={handleInputChange} />
         {errors.email && <small className="error">{errors.email}</small>}
@@ -105,6 +129,9 @@ const SignUp = () => {
         )}
         <button>Create Account</button>
       </form>
+      <p>
+        Already have an account? Click <Link to="/signin">here</Link> to sign in
+      </p>
     </>
   );
 };
