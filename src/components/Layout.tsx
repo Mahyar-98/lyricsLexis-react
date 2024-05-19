@@ -12,9 +12,31 @@ const Layout = () => {
     useEffect(() => {
       const token = localStorage.getItem("token");
       if (token) {
-        setLoggedIn(true); // Set logged-in state to true if token is present
+        verifyToken(token); // Set logged-in state to true if token is present
       }
     }, []);
+
+    const verifyToken = async (token: string) => {
+      try {
+        const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/verify-token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`, // Include token in Authorization header
+          },
+        });
+        if (response.ok) {
+          setLoggedIn(true); // Set logged-in state to true if token is valid
+        } else {
+          // Token is invalid or expired
+          setLoggedIn(false);
+          localStorage.removeItem("token"); // Remove invalid token from local storage
+        }
+      } catch (error) {
+        console.error("Error validating token: ", error.message);
+        // Handle error (e.g., display error message to the user)
+      }
+    };
 
     const handleSignOut = () => {
       // Clear the authentication token from local storage
