@@ -13,7 +13,7 @@ const SignIn = () => {
   });
   const [errors, setErrors] = useState<Partial<SignInData>>({});
   const navigate = useNavigate();
-  const { setLoggedIn } = useOutletContext(); //TODO: add the type
+  const { setSession } = useOutletContext(); //TODO: add the type
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -57,25 +57,29 @@ const SignIn = () => {
     e.preventDefault();
     if (validateSignUp()) {
       try {
-        const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/signin", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL + "/signin",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(signInData),
           },
-          body: JSON.stringify(signInData),
-        });
+        );
         if (response.ok) {
-          const { token } = await response.json();
+          const session = await response.json();
           // Store token in local storage
-          localStorage.setItem("token", token);
-          setLoggedIn(true);
+          localStorage.setItem("token", session.token);
+          setSession(session);
           // Redirect to homepage
           navigate("/");
         } else {
           const errorData = await response.json();
           throw new Error(errorData.message);
         }
-      } catch (error: unknown) { // TODO: update the error type
+      } catch (error: unknown) {
+        // TODO: update the error type
         console.error("Error: ", error.message);
         // Handle error (e.g., display error message to the user)
       }

@@ -5,47 +5,51 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 const Layout = () => {
   const [loading, setLoading] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [session, setSession] = useState(null);
   const navigate = useNavigate();
 
-    // UseEffect to check if token is present when component mounts
-    useEffect(() => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        verifyToken(token); // Set logged-in state to true if token is present
-      }
-    }, []);
+  // UseEffect to check if token is present when component mounts
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      verifyToken(token); // Set logged-in state to true if token is present
+    }
+  }, []);
 
-    const verifyToken = async (token: string) => {
-      try {
-        const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/verify-token", {
+  const verifyToken = async (token: string) => {
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_BACKEND_URL + "/verify-token",
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`, // Include token in Authorization header
+            Authorization: `Bearer ${token}`, // Include token in Authorization header
           },
-        });
-        if (response.ok) {
-          setLoggedIn(true); // Set logged-in state to true if token is valid
-        } else {
-          // Token is invalid or expired
-          setLoggedIn(false);
-          localStorage.removeItem("token"); // Remove invalid token from local storage
-        }
-      } catch (error) {
-        console.error("Error validating token: ", error.message);
-        // Handle error (e.g., display error message to the user)
+        },
+      );
+      if (response.ok) {
+        const session = await response.json();
+        setSession(session); // Set logged-in state to true if token is valid
+      } else {
+        // Token is invalid or expired
+        setSession(null);
+        localStorage.removeItem("token"); // Remove invalid token from local storage
       }
-    };
+    } catch (error) {
+      console.error("Error validating token: ", error.message);
+      // Handle error (e.g., display error message to the user)
+    }
+  };
 
-    const handleSignOut = () => {
-      // Clear the authentication token from local storage
-      localStorage.removeItem("token");
-      // Update the logged-in state to false
-      setLoggedIn(false);
-      // Redirect to the sign-in page or any other appropriate page
-      navigate("/signin");
-    };
+  const handleSignOut = () => {
+    // Clear the authentication token from local storage
+    localStorage.removeItem("token");
+    // Update the logged-in state to false
+    setSession(null);
+    // Redirect to the sign-in page or any other appropriate page
+    navigate("/signin");
+  };
 
   return (
     <div className="layout">
@@ -68,7 +72,7 @@ const Layout = () => {
               <li>
                 <Link to="/about">about</Link>
               </li>
-              {!loggedIn ? (
+              {!session ? (
                 <>
                   <li>
                     <Link to="/signin">sign in</Link>
@@ -114,7 +118,7 @@ const Layout = () => {
           </ul>
           <hr />
           <ul>
-            {!loggedIn ? (
+            {!session ? (
               <>
                 <li>
                   <Link to="contact">
@@ -177,7 +181,7 @@ const Layout = () => {
             <h2>The page is loading...</h2>
           </div>
         ) : (
-          <Outlet context={{ loggedIn, setLoggedIn }} />
+          <Outlet context={{ session, setSession }} />
         )}
       </main>
       <footer>

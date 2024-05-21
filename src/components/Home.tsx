@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import Dictionary from "./Dictionary";
 
 interface Song {
@@ -24,7 +24,9 @@ const Home = () => {
   });
   const [query, setQuery] = useState("");
   const [song, setSong] = useState<Song | null>(null);
+  const [isSongSaved, setIsSongSaved] = useState(false);
   const [word, setWord] = useState<string | null>(null);
+  const { session } = useOutletContext(); //TODO: add the type
 
   useEffect(() => {
     if (query) {
@@ -33,6 +35,35 @@ const Home = () => {
         .then((data) => setSong(data));
     }
   }, [query]);
+
+  useEffect(() => {
+    if (session && song) {
+      fetch(
+        import.meta.env.VITE_BACKEND_URL +
+          "/users/" +
+          session.userId +
+          "/songs/" +
+          encodeURIComponent(song.author) +
+          "/" +
+          encodeURIComponent(song.title),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+          },
+        },
+      )
+        .then((res) => {
+          if (res.ok) {
+            setIsSongSaved(true);
+          } else {
+            setIsSongSaved(false);
+          }
+        })
+        .catch(() => console.log("Song not found"));
+    }
+  }, [song, session, isSongSaved]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,8 +78,66 @@ const Home = () => {
     setQuery((searchData.song + " " + searchData.artist).trim());
   };
 
-  const handleSaveSong = (song: Song) => {
-    return song;
+  const handleSaveSong = async (song: Song) => {
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_BACKEND_URL +
+          "/users/" +
+          session.userId +
+          "/songs",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+          },
+          body: JSON.stringify(song),
+        },
+      );
+
+      if (response.ok) {
+        console.log("Song saved successfully!");
+        setIsSongSaved(true);
+      } else {
+        console.log("Failed to save song:", response.statusText);
+        // Show some error message to the user
+      }
+    } catch (error) {
+      console.error("Error saving song:", error);
+      // Handle the error (e.g., show an error message to the user)
+    }
+  };
+
+  const handleUnsaveSong = async (song: Song) => {
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_BACKEND_URL +
+          "/users/" +
+          session.userId +
+          "/songs/" +
+          encodeURIComponent(song.author) +
+          "/" +
+          encodeURIComponent(song.title),
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+          },
+        },
+      );
+
+      if (response.ok) {
+        console.log("Song unsaved successfully!");
+        setIsSongSaved(false);
+      } else {
+        console.log("Failed to unsave song:", response.statusText);
+        // Show some error message to the user
+      }
+    } catch (error) {
+      console.error("Error unsaving song:", error);
+      // Handle the error (e.g., show an error message to the user)
+    }
   };
 
   const handleWordClick = (word: string) => {
@@ -71,7 +160,13 @@ const Home = () => {
       <div>
         {song && (
           <>
-            <button onClick={() => handleSaveSong(song)}>save song</button>
+            {session && isSongSaved ? (
+              <button onClick={() => handleUnsaveSong(song)}>
+                unsave song
+              </button>
+            ) : (
+              <button onClick={() => handleSaveSong(song)}>save song</button>
+            )}
             {song.title + " by " + song.author}
             <img
               src={song.thumbnail.genius}
