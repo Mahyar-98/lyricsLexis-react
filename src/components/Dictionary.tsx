@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
 interface Pronunciation {
   text: string;
@@ -34,8 +35,11 @@ interface WordData {
   meanings: Definition[];
 }
 
-const Dictionary = ({ word }: { word: string | null }) => {
+const Dictionary = ({ word }: { word: string }) => {
   const [meanings, setMeanings] = useState<WordData[] | null>(null);
+  const [isWordSaved, setIsWordSaved] = useState(false);
+  const { session } = useOutletContext(); //TODO: add the type
+
   useEffect(() => {
     if (word) {
       fetch(import.meta.env.VITE_BACKEND_URL + "/api/dictionary/" + word)
@@ -44,15 +48,105 @@ const Dictionary = ({ word }: { word: string | null }) => {
     }
   }, [word]);
 
-  const handleSaveWord = (savingWord: string) => {
-    return savingWord;
+  useEffect(() => {
+    if (session && word) {
+      fetch(
+        import.meta.env.VITE_BACKEND_URL +
+          "/users/" +
+          session.userId +
+          "/words/" +
+          encodeURIComponent(word),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+          },
+        },
+      )
+        .then((res) => {
+          if (res.ok) {
+            setIsWordSaved(true);
+          } else {
+            setIsWordSaved(false);
+          }
+        })
+        .catch(() => console.log("Word not found"));
+    }
+  }, [word, session, isWordSaved]);
+
+  const handleSaveWord = async (word: string) => {
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_BACKEND_URL +
+          "/users/" +
+          session.userId +
+          "/words",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+          },
+          body: JSON.stringify({word}),
+        },
+      );
+
+      if (response.ok) {
+        console.log("Word saved successfully!");
+        setIsWordSaved(true);
+      } else {
+        console.log("Failed to save word:", response.statusText);
+        // Show some error message to the user
+      }
+    } catch (error) {
+      console.error("Error saving word:", error);
+      // Handle the error (e.g., show an error message to the user)
+    }
   };
+
+  const handleUnsaveWord = async (word: string) => {
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_BACKEND_URL +
+          "/users/" +
+          session.userId +
+          "/words/" +
+          encodeURIComponent(word),
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+          },
+        },
+      );
+
+      if (response.ok) {
+        console.log("Word unsaved successfully!");
+        setIsWordSaved(false);
+      } else {
+        console.log("Failed to unsave word:", response.statusText);
+        // Show some error message to the user
+      }
+    } catch (error) {
+      console.error("Error unsaving word:", error);
+      // Handle the error (e.g., show an error message to the user)
+    }
+  };
+
   return (
     <>
       {meanings && meanings.length > 0 ? (
         <div className="hasMeaning">
-          <button onClick={() => handleSaveWord(word!)}>save word</button>
-          {meanings.map((meaning, index) => (
+            {session && isWordSaved ? (
+              <button onClick={() => handleUnsaveWord(word)}>
+                unsave word
+              </button>
+            ) : (
+              <button onClick={() => handleSaveWord(word)}>save word</button>
+            )}
+            {meanings.map((meaning, index) => (
             <div key={index}>
               <h1>{meaning.word}</h1>
               {meaning.phonetics && meaning.phonetics.length > 0 && (
@@ -60,7 +154,7 @@ const Dictionary = ({ word }: { word: string | null }) => {
                   {meaning.phonetics.map((pronunciation, index) => (
                     <div key={index}>
                       <p>{pronunciation.text}</p>
-                      <audio controls>
+                      <audio key={pronunciation.audio} controls>
                         <source src={pronunciation.audio} type="audio/mpeg" />
                         Your browser does not support the audio element.
                       </audio>

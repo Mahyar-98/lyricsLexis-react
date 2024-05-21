@@ -209,7 +209,7 @@ const Home = () => {
           </>
         )}
       </div>
-      <Dictionary word={word} />
+      {word ? <Dictionary word={word} /> : null}
     </>
   );
 };
