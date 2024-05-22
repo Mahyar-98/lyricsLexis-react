@@ -188,6 +188,10 @@ form small {
   background-color: yellow;
 }
 
+.learned {
+  background-color: rgb(169, 238, 169);
+}
+
 @media (min-width: 600px) {
   .container {
     padding-right: 2em;

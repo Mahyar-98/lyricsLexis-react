@@ -38,7 +38,10 @@ interface WordData {
 const Dictionary = ({ word }: { word: string }) => {
   const [meanings, setMeanings] = useState<WordData[] | null>(null);
   const [isWordSaved, setIsWordSaved] = useState(false);
-  const { session, allSavedWords, setAllSavedWords } = useOutletContext(); //TODO: add the type
+  const [isLearned, setIsLearned] = useState(false);
+  const [note, setNote] = useState("");
+  const [showNoteForm, setShowNoteForm] = useState(false);
+  const { session, setAllSavedWords, setUpdateTrigger } = useOutletContext(); //TODO: add the type
 
   useEffect(() => {
     if (word) {
@@ -49,6 +52,7 @@ const Dictionary = ({ word }: { word: string }) => {
   }, [word]);
 
   useEffect(() => {
+    setNote(""); // Reset note state
     if (session && meanings) {
       fetch(
         import.meta.env.VITE_BACKEND_URL +
@@ -67,9 +71,15 @@ const Dictionary = ({ word }: { word: string }) => {
         .then((res) => {
           if (res.ok) {
             setIsWordSaved(true);
+            return res.json();
           } else {
             setIsWordSaved(false);
+            return {};
           }
+        })
+        .then((data) => {
+          setIsLearned(data.learned || false);
+          setNote(data.note || "");
         })
         .catch(() => console.log("Word not found"));
     }
@@ -139,14 +149,117 @@ const Dictionary = ({ word }: { word: string }) => {
     }
   };
 
+  const handleCheckboxChange = async () => {
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_BACKEND_URL +
+          "/users/" +
+          session.userId +
+          "/words/" +
+          encodeURIComponent(word.toLowerCase()),
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+          },
+          body: JSON.stringify({ learned: !isLearned }), // Toggle learned status
+        },
+      );
+
+      if (response.ok) {
+        console.log("Word learned status updated successfully!");
+        setIsLearned(!isLearned); // Toggle local state
+        setUpdateTrigger((prev:boolean) => !prev)
+      } else {
+        console.log("Failed to update word learned status:", response.statusText);
+        // Show some error message to the user
+      }
+    } catch (error) {
+      console.error("Error updating word learned status:", error);
+      // Handle the error (e.g., show an error message to the user)
+    }
+  };
+
+  const handleNoteChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNote(event.target.value);
+  };
+
+  const handleNoteSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_BACKEND_URL +
+          "/users/" +
+          session.userId +
+          "/words/" +
+          encodeURIComponent(word.toLowerCase()),
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+          },
+          body: JSON.stringify({ note }), // Send note in the request body
+        },
+      );
+
+      if (response.ok) {
+        console.log("Note added successfully!");
+        setShowNoteForm(false);
+      } else {
+        console.log("Failed to add note:", response.statusText);
+        // Show some error message to the user
+      }
+    } catch (error) {
+      console.error("Error adding note:", error);
+      // Handle the error (e.g., show an error message to the user)
+    }
+  };
+
   return (
     <>
       {meanings && meanings.length > 0 ? (
         <div className="hasMeaning">
           {session && isWordSaved ? (
-            <button onClick={() => handleUnsaveWord(word.toLowerCase())}>
-              unsave word
-            </button>
+            <>
+              <button onClick={() => handleUnsaveWord(word.toLowerCase())}>
+                unsave word
+              </button>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={isLearned}
+                  onChange={handleCheckboxChange}
+                />
+                Learned
+              </label>
+              {note ? (
+                <>
+                  {showNoteForm ? null : <p>Note: {note}</p>}
+                  <button onClick={() => setShowNoteForm(true)}>
+                    Edit Note
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => setShowNoteForm(true)}>Add Note</button>
+              )}
+              {showNoteForm && (
+                <form onSubmit={handleNoteSubmit}>
+                  <label htmlFor="note">Add/Edit Note: </label>
+                  <textarea
+                    name="note"
+                    id="note"
+                    cols={30}
+                    rows={10}
+                    value={note}
+                    onChange={handleNoteChange}
+                    placeholder={`I learned the word "${word.toLowerCase()}" from this line of the song: ...`}
+                  ></textarea>
+                  <button>Done</button>
+                </form>
+              )}
+            </>
           ) : (
             <button onClick={() => handleSaveWord(word.toLowerCase())}>
               save word

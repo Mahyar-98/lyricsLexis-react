@@ -16,6 +16,7 @@ const Layout = () => {
   const [navOpen, setNavOpen] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [allSavedWords, setAllSavedWords] = useState([]);
+  const [updateTrigger, setUpdateTrigger] = useState(false)
   const navigate = useNavigate();
 
   // UseEffect to check if token is present when component mounts
@@ -45,7 +46,7 @@ const Layout = () => {
         .then((data) => setAllSavedWords(data))
         .catch(() => console.log("Words not found"));
     }
-  }, [session]);
+  }, [session, updateTrigger]);
 
   const verifyToken = async (token: string) => {
     try {
@@ -213,7 +214,7 @@ const Layout = () => {
           </div>
         ) : (
           <Outlet
-            context={{ session, setSession, allSavedWords, setAllSavedWords }}
+            context={{ session, setSession, allSavedWords, setAllSavedWords, setUpdateTrigger }}
           />
         )}
       </main>

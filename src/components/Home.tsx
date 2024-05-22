@@ -15,10 +15,13 @@ interface Song {
   };
   disclaimer: string;
   source: number;
+  error?: string;
 }
 
 interface Word {
   word: string;
+  learned: boolean;
+  note: string;
 }
 
 const Home = () => {
@@ -42,7 +45,7 @@ const Home = () => {
   }, [query]);
 
   useEffect(() => {
-    if (session && song) {
+    if (session && song && song.lyrics) {
       fetch(
         import.meta.env.VITE_BACKEND_URL +
           "/users/" +
@@ -71,7 +74,7 @@ const Home = () => {
   }, [song, session, isSongSaved]);
 
   useEffect(() => {
-    if (session && song) {
+    if (session && song && song.lyrics) {
       const savedWordsInLyrics: Word[] = []; // Array to store saved words found in lyrics
 
       // Split lyrics into words
@@ -93,15 +96,9 @@ const Home = () => {
             savedWordsInLyrics.push(foundWord);
           }
         });
-
       setSongSavedWords(savedWordsInLyrics);
     }
   }, [song, session, allSavedWords]);
-
-  useEffect(() => {
-    // DELETE ME LATER
-    songSavedWords ? console.log(songSavedWords) : null;
-  }, [songSavedWords]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -196,7 +193,7 @@ const Home = () => {
         <button>Find lyrics</button>
       </form>
       <div>
-        {song && (
+        {song && song.lyrics ? (
           <>
             <div>
               here are the words you have saved from this song:
@@ -226,17 +223,18 @@ const Home = () => {
                         .split(/(\b[\w'-]+\b|[^\w\s'])/)
                         .map((segment, segmentIndex) => {
                           const isWord = /\b[\w'-]+\b/.test(segment.trim());
-                          const isSaved = songSavedWords.some(
+                          const savedWord = songSavedWords.find(
                             (savedWord) =>
-                              savedWord.word.toLowerCase() ===
-                              segment.toLowerCase(),
+                              savedWord.word.toLowerCase() === segment.toLowerCase()
                           );
+                          const isSaved = savedWord ? true : false;
+                          const isLearned = savedWord ? savedWord.learned : false;
 
                           return (
                             <React.Fragment key={segmentIndex}>
                               {isWord ? (
                                 <span
-                                  className={`lyricsWord${isSaved ? " saved" : ""}`}
+                                  className={`lyricsWord${isSaved ? " saved" + (isLearned ? " learned" : "") : ""}`}
                                   onClick={() => handleWordClick(segment)}
                                 >
                                   {segment}
@@ -259,7 +257,7 @@ const Home = () => {
               <Link to={song.links.genius}>Genius</Link>
             </p>
           </>
-        )}
+        ) : song && song.error ? (<p>Sorry! We couldn't find the song</p>) : null}
       </div>
       {word ? <Dictionary word={word} /> : null}
     </>
