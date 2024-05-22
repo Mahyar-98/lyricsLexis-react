@@ -17,6 +17,10 @@ interface Song {
   source: number;
 }
 
+interface Word {
+  word: string;
+}
+
 const Home = () => {
   const [searchData, setSearchData] = useState({
     song: "",
@@ -25,8 +29,9 @@ const Home = () => {
   const [query, setQuery] = useState("");
   const [song, setSong] = useState<Song | null>(null);
   const [isSongSaved, setIsSongSaved] = useState(false);
+  const [songSavedWords, setSongSavedWords] = useState<Word[]>([]);
   const [word, setWord] = useState<string | null>(null);
-  const { session } = useOutletContext(); //TODO: add the type
+  const { session, allSavedWords } = useOutletContext(); //TODO: add the type
 
   useEffect(() => {
     if (query) {
@@ -64,6 +69,39 @@ const Home = () => {
         .catch(() => console.log("Song not found"));
     }
   }, [song, session, isSongSaved]);
+
+  useEffect(() => {
+    if (session && song) {
+      const savedWordsInLyrics: Word[] = []; // Array to store saved words found in lyrics
+
+      // Split lyrics into words
+      const words = song.lyrics.match(/\b[\w'-]+\b/g);
+
+      // Iterate through each word in the lyrics
+      words &&
+        words.forEach((word) => {
+          // Find the word object in allSavedWords array by matching the word
+          const foundWord = allSavedWords.find(
+            (savedWord) => savedWord.word === word,
+          );
+
+          // If the word object is found and not already included in savedWordsInLyrics, add it
+          if (
+            foundWord &&
+            !savedWordsInLyrics.some((w) => w.word === foundWord.word)
+          ) {
+            savedWordsInLyrics.push(foundWord);
+          }
+        });
+
+      setSongSavedWords(savedWordsInLyrics);
+    }
+  }, [song, session, allSavedWords]);
+
+  useEffect(() => {
+    // DELETE ME LATER
+    songSavedWords ? console.log(songSavedWords) : null;
+  }, [songSavedWords]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -160,6 +198,12 @@ const Home = () => {
       <div>
         {song && (
           <>
+            <div>
+              here are the words you have saved from this song:
+              {songSavedWords.map((w) => (
+                <p key={w.word}>{w.word}</p>
+              ))}
+            </div>
             {session && isSongSaved ? (
               <button onClick={() => handleUnsaveSong(song)}>
                 unsave song
@@ -182,10 +226,19 @@ const Home = () => {
                         .split(/(\b[\w'-]+\b|[^\w\s'])/)
                         .map((segment, segmentIndex) => {
                           const isWord = /\b[\w'-]+\b/.test(segment.trim());
+                          const isSaved = songSavedWords.some(
+                            (savedWord) =>
+                              savedWord.word.toLowerCase() ===
+                              segment.toLowerCase(),
+                          );
+
                           return (
                             <React.Fragment key={segmentIndex}>
                               {isWord ? (
-                                <span onClick={() => handleWordClick(segment)}>
+                                <span
+                                  className={`lyricsWord${isSaved ? " saved" : ""}`}
+                                  onClick={() => handleWordClick(segment)}
+                                >
                                   {segment}
                                 </span>
                               ) : (
@@ -196,8 +249,7 @@ const Home = () => {
                         })}
                     </p>
                   ))}
-                  <p key={`empty-${index}`}>&nbsp;</p>{" "}
-                  {/* Add unique key for empty line */}
+                  <p key={`empty-${index}`}>&nbsp;</p>
                 </div>
               ))}
 

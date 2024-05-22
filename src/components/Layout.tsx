@@ -2,10 +2,20 @@ import "../styles/layout.css";
 import { useState, useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
+interface Session {
+  token: string;
+  userId: string;
+}
+
+interface Word {
+  word: string;
+}
+
 const Layout = () => {
   const [loading, setLoading] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [allSavedWords, setAllSavedWords] = useState([]);
   const navigate = useNavigate();
 
   // UseEffect to check if token is present when component mounts
@@ -15,6 +25,27 @@ const Layout = () => {
       verifyToken(token); // Set logged-in state to true if token is present
     }
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      fetch(
+        import.meta.env.VITE_BACKEND_URL +
+          "/users/" +
+          session.userId +
+          "/words/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+          },
+        },
+      )
+        .then((res) => res.json())
+        .then((data) => setAllSavedWords(data))
+        .catch(() => console.log("Words not found"));
+    }
+  }, [session]);
 
   const verifyToken = async (token: string) => {
     try {
@@ -181,7 +212,9 @@ const Layout = () => {
             <h2>The page is loading...</h2>
           </div>
         ) : (
-          <Outlet context={{ session, setSession }} />
+          <Outlet
+            context={{ session, setSession, allSavedWords, setAllSavedWords }}
+          />
         )}
       </main>
       <footer>

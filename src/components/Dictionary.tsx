@@ -38,7 +38,7 @@ interface WordData {
 const Dictionary = ({ word }: { word: string }) => {
   const [meanings, setMeanings] = useState<WordData[] | null>(null);
   const [isWordSaved, setIsWordSaved] = useState(false);
-  const { session } = useOutletContext(); //TODO: add the type
+  const { session, allSavedWords, setAllSavedWords } = useOutletContext(); //TODO: add the type
 
   useEffect(() => {
     if (word) {
@@ -49,13 +49,13 @@ const Dictionary = ({ word }: { word: string }) => {
   }, [word]);
 
   useEffect(() => {
-    if (session && word) {
+    if (session && meanings) {
       fetch(
         import.meta.env.VITE_BACKEND_URL +
           "/users/" +
           session.userId +
           "/words/" +
-          encodeURIComponent(word),
+          encodeURIComponent(word.toLowerCase()),
         {
           method: "GET",
           headers: {
@@ -73,7 +73,7 @@ const Dictionary = ({ word }: { word: string }) => {
         })
         .catch(() => console.log("Word not found"));
     }
-  }, [word, session, isWordSaved]);
+  }, [session, isWordSaved, meanings, word]);
 
   const handleSaveWord = async (word: string) => {
     try {
@@ -88,13 +88,15 @@ const Dictionary = ({ word }: { word: string }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session.token}`, // Include token in Authorization header
           },
-          body: JSON.stringify({word}),
+          body: JSON.stringify({ word }),
         },
       );
 
       if (response.ok) {
         console.log("Word saved successfully!");
         setIsWordSaved(true);
+        const newWords = await response.json();
+        setAllSavedWords(newWords);
       } else {
         console.log("Failed to save word:", response.statusText);
         // Show some error message to the user
@@ -125,6 +127,8 @@ const Dictionary = ({ word }: { word: string }) => {
       if (response.ok) {
         console.log("Word unsaved successfully!");
         setIsWordSaved(false);
+        const newWords = await response.json();
+        setAllSavedWords(newWords);
       } else {
         console.log("Failed to unsave word:", response.statusText);
         // Show some error message to the user
@@ -139,14 +143,16 @@ const Dictionary = ({ word }: { word: string }) => {
     <>
       {meanings && meanings.length > 0 ? (
         <div className="hasMeaning">
-            {session && isWordSaved ? (
-              <button onClick={() => handleUnsaveWord(word)}>
-                unsave word
-              </button>
-            ) : (
-              <button onClick={() => handleSaveWord(word)}>save word</button>
-            )}
-            {meanings.map((meaning, index) => (
+          {session && isWordSaved ? (
+            <button onClick={() => handleUnsaveWord(word.toLowerCase())}>
+              unsave word
+            </button>
+          ) : (
+            <button onClick={() => handleSaveWord(word.toLowerCase())}>
+              save word
+            </button>
+          )}
+          {meanings.map((meaning, index) => (
             <div key={index}>
               <h1>{meaning.word}</h1>
               {meaning.phonetics && meaning.phonetics.length > 0 && (
