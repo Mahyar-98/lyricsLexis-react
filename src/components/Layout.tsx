@@ -16,7 +16,7 @@ const Layout = () => {
   const [navOpen, setNavOpen] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [allSavedWords, setAllSavedWords] = useState([]);
-  const [updateTrigger, setUpdateTrigger] = useState(false)
+  const [updateTrigger, setUpdateTrigger] = useState(false);
   const navigate = useNavigate();
 
   // UseEffect to check if token is present when component mounts
@@ -116,7 +116,7 @@ const Layout = () => {
               ) : (
                 <>
                   <li>
-                    <Link to="/account">your account</Link>
+                    <Link to="/library">library</Link>
                   </li>
                   <li>
                     <button onClick={handleSignOut}>sign out</button>
@@ -178,14 +178,14 @@ const Layout = () => {
             ) : (
               <>
                 <li>
-                  <Link to="contact">
+                  <Link to="library">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 448 512"
                     >
-                      <path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z" />
+                      <path d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z" />
                     </svg>
-                    <p>your account</p>
+                    <p>library</p>
                   </Link>
                 </li>
                 <li>
@@ -214,7 +214,13 @@ const Layout = () => {
           </div>
         ) : (
           <Outlet
-            context={{ session, setSession, allSavedWords, setAllSavedWords, setUpdateTrigger }}
+            context={{
+              session,
+              setSession,
+              allSavedWords,
+              setAllSavedWords,
+              setUpdateTrigger,
+            }}
           />
         )}
       </main>

@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import About from "./components/About";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
+import Library from "./components/Library";
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -27,6 +28,10 @@ const Router = () => {
         {
           path: "/signup",
           element: <SignUp />,
+        },
+        {
+          path: "/library",
+          element: <Library />,
         },
       ],
     },

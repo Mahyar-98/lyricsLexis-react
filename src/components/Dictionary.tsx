@@ -170,9 +170,12 @@ const Dictionary = ({ word }: { word: string }) => {
       if (response.ok) {
         console.log("Word learned status updated successfully!");
         setIsLearned(!isLearned); // Toggle local state
-        setUpdateTrigger((prev:boolean) => !prev)
+        setUpdateTrigger((prev: boolean) => !prev);
       } else {
-        console.log("Failed to update word learned status:", response.statusText);
+        console.log(
+          "Failed to update word learned status:",
+          response.statusText,
+        );
         // Show some error message to the user
       }
     } catch (error) {
