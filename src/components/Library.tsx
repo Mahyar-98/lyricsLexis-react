@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import Dictionary from "./Dictionary";
 import Lyrics from "./Lyrics";
+import { DateTime } from "luxon";
 
 interface SavedSong {
   title: string;
   author: string;
-  note: string;
   createdAt: string;
 }
 
@@ -35,8 +35,16 @@ interface ExternalSong {
 const Library = () => {
   const [savedSongs, setSavedSongs] = useState<SavedSong[]>([]);
   const [showSongs, setShowSongs] = useState(true);
-  const [selectedSong, setSelectedSong] = useState<ExternalSong | null>(null); // Update the type here
+  const [selectedSong, setSelectedSong] = useState<ExternalSong | null>(null);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  const [songSortBy, setSongSortBy] = useState<
+    "title" | "author" | "createdAt"
+  >("title");
+  const [songSortOrder, setSongSortOrder] = useState<"asc" | "desc">("asc");
+  const [wordSortBy, setWordSortBy] = useState<
+    "word" | "learned" | "createdAt"
+  >("word");
+  const [wordSortOrder, setWordSortOrder] = useState<"asc" | "desc">("asc");
   const { session, allSavedWords } = useOutletContext();
 
   useEffect(() => {
@@ -50,7 +58,7 @@ const Library = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+            Authorization: `Bearer ${session.token}`,
           },
         },
       )
@@ -63,7 +71,6 @@ const Library = () => {
   const handleSongClick = (song: SavedSong) => {
     setSelectedWord(null);
     if (session) {
-      // Fetch lyrics for the selected song from the external API
       fetch(
         "https://some-random-api.com/others/lyrics/?title=" +
           song.title +
@@ -81,6 +88,37 @@ const Library = () => {
     setSelectedWord(word);
   };
 
+  const sortItems = (items: any[], sortBy: string, sortOrder: string) => {
+    return items.sort((a, b) => {
+      if (sortBy === "createdAt") {
+        return sortOrder === "asc"
+          ? new Date(a[sortBy]).getTime() - new Date(b[sortBy]).getTime()
+          : new Date(b[sortBy]).getTime() - new Date(a[sortBy]).getTime();
+      } else if (
+        sortBy === "title" ||
+        sortBy === "author" ||
+        sortBy === "word"
+      ) {
+        return sortOrder === "asc"
+          ? a[sortBy].localeCompare(b[sortBy])
+          : b[sortBy].localeCompare(a[sortBy]);
+      } else if (sortBy === "learned") {
+        return sortOrder === "asc" ? (a[sortBy] ? 1 : -1) : a[sortBy] ? -1 : 1;
+      }
+      return 0;
+    });
+  };
+
+  const handleSongSortChange = (sortBy: string) => {
+    setSongSortBy(sortBy as "title" | "author" | "createdAt");
+    setSongSortOrder(songSortOrder === "asc" ? "desc" : "asc");
+  };
+
+  const handleWordSortChange = (sortBy: string) => {
+    setWordSortBy(sortBy as "word" | "learned" | "createdAt");
+    setWordSortOrder(wordSortOrder === "asc" ? "desc" : "asc");
+  };
+
   return (
     <div>
       <h1>Library</h1>
@@ -88,34 +126,69 @@ const Library = () => {
         <button onClick={() => setShowSongs(true)}>Saved Songs</button>
         <button onClick={() => setShowSongs(false)}>Saved Words</button>
       </div>
+      <div>
+        {showSongs ? (
+          <div>
+            Sort by:
+            <button onClick={() => handleSongSortChange("title")}>Title</button>
+            <button onClick={() => handleSongSortChange("author")}>
+              Artist
+            </button>
+            <button onClick={() => handleSongSortChange("createdAt")}>
+              Date
+            </button>
+          </div>
+        ) : (
+          <div>
+            Sort by:
+            <button onClick={() => handleWordSortChange("word")}>Word</button>
+            <button onClick={() => handleWordSortChange("learned")}>
+              Learned
+            </button>
+            <button onClick={() => handleWordSortChange("createdAt")}>
+              Date
+            </button>
+          </div>
+        )}
+      </div>
       {showSongs ? (
         savedSongs.length > 0 ? (
           <ul>
-            {savedSongs.map((savedSong) => (
-              <li
-                key={savedSong.title}
-                onClick={() => handleSongClick(savedSong)}
-              >
-                {savedSong.title} by {savedSong.author}
-                <small>Note: {savedSong.note}</small>
-                <br />
-                <small>Created At: {savedSong.createdAt}</small>
-              </li>
-            ))}
+            {sortItems(savedSongs, songSortBy, songSortOrder).map(
+              (savedSong) => (
+                <li
+                  key={savedSong.title}
+                  onClick={() => handleSongClick(savedSong)}
+                >
+                  <b>{savedSong.title}</b>
+                  <p>by: {savedSong.author}</p>
+                  <small>
+                    saved on:{" "}
+                    {DateTime.fromISO(savedSong.createdAt).toFormat(
+                      "MMMM dd, yyyy",
+                    )}
+                  </small>
+                </li>
+              ),
+            )}
           </ul>
         ) : (
           <p>No saved songs found.</p>
         )
       ) : allSavedWords.length > 0 ? (
         <ul>
-          {allSavedWords.map((savedWord) => (
-            <li
-              key={savedWord.word}
-              onClick={() => handleWordClick(savedWord.word)}
-            >
-              {savedWord.word}
-            </li>
-          ))}
+          {sortItems(allSavedWords, wordSortBy, wordSortOrder).map(
+            (savedWord) => (
+              <li
+                key={savedWord.word}
+                onClick={() => handleWordClick(savedWord.word)}
+              >
+                <b className={savedWord.learned ? "learned" : ""}>
+                  {savedWord.word}
+                </b>
+              </li>
+            ),
+          )}
         </ul>
       ) : (
         <p>No saved words found.</p>
