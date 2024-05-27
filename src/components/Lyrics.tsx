@@ -1,3 +1,4 @@
+import "../styles/lyrics.css";
 import React, { useState, useEffect } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 
@@ -30,7 +31,7 @@ interface LyricsProps {
 const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
   const [isSongSaved, setIsSongSaved] = useState(false);
   const [songSavedWords, setSongSavedWords] = useState<Word[]>([]);
-  const { session, allSavedWords } = useOutletContext();
+  const { session, allSavedWords, setDicOpen } = useOutletContext();
 
   useEffect(() => {
     if (session && song && song.lyrics) {
@@ -73,7 +74,7 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
         words.forEach((word) => {
           // Find the word object in allSavedWords array by matching the word
           const foundWord = allSavedWords.find(
-            (savedWord: Word) => savedWord.word === word,
+            (savedWord: Word) => savedWord.word === word.toLowerCase(),
           );
 
           // If the word object is found and not already included in savedWordsInLyrics, add it
@@ -87,6 +88,10 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
       setSongSavedWords(savedWordsInLyrics);
     }
   }, [song, session, allSavedWords]);
+
+  useEffect(() => {
+    console.log(songSavedWords);
+  }, [songSavedWords]);
 
   const handleSaveSong = async (song: Song) => {
     try {
@@ -138,19 +143,20 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
       );
 
       if (response.ok) {
-        console.log("Song unsaved successfully!");
+        console.log("Song removed successfully!");
         setIsSongSaved(false);
       } else {
-        console.log("Failed to unsave song:", response.statusText);
+        console.log("Failed to remove song:", response.statusText);
         // Show some error message to the user
       }
     } catch (error) {
-      console.error("Error unsaving song:", error);
+      console.error("Error removing song:", error);
       // Handle the error (e.g., show an error message to the user)
     }
   };
 
   const handleWordClick = (word: string) => {
+    setDicOpen(true);
     fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word)
       .then((res) => res.json())
       .then((data) => console.log(data));
@@ -159,64 +165,100 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
 
   return (
     <>
-      <div>
-        here are the words you have saved from this song:
-        {songSavedWords.map((w) => (
-          <p key={w.word}>{w.word}</p>
-        ))}
-      </div>
-      {session && isSongSaved ? (
-        <button onClick={() => handleUnsaveSong(song)}>unsave song</button>
-      ) : (
-        <button onClick={() => handleSaveSong(song)}>save song</button>
-      )}
-      {song.title + " by " + song.author}
-      <img
-        src={song.thumbnail.genius}
-        alt={song.title + " track cover by " + song.author}
-      />
-      {song.lyrics
-        .split(/\n\n/) // Split based on consecutive line breaks
-        .map((piece: string, index: number) => (
-          <div key={index}>
-            {piece.split("\n").map((line, lineIndex) => (
-              <p key={lineIndex}>
-                {line
-                  .split(/(\b[\w'-]+\b|[^\w\s'])/)
-                  .map((segment, segmentIndex) => {
-                    const isWord = /\b[\w'-]+\b/.test(segment.trim());
-                    const savedWord = songSavedWords.find(
-                      (savedWord) =>
-                        savedWord.word.toLowerCase() === segment.toLowerCase(),
-                    );
-                    const isSaved = savedWord ? true : false;
-                    const isLearned = savedWord ? savedWord.learned : false;
-
-                    return (
-                      <React.Fragment key={segmentIndex}>
-                        {isWord ? (
-                          <span
-                            className={`lyricsWord${isSaved ? " saved" + (isLearned ? " learned" : "") : ""}`}
-                            onClick={() => handleWordClick(segment)}
-                          >
-                            {segment}
-                          </span>
-                        ) : (
-                          segment
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-              </p>
-            ))}
-            <p key={`empty-${index}`}>&nbsp;</p>
+      <div className="song-info">
+        <img
+          src={song.thumbnail.genius}
+          alt={song.title + " track cover by " + song.author}
+        />
+        <div className="song-info-right">
+          <div className="song-info-right-top">
+            <div>
+              <b>Artist: </b>
+              {song.author}
+            </div>
+            <div>
+              <b>Title: </b>
+              {song.title}
+            </div>
+            {session && songSavedWords.length > 0 && (
+              <div>
+                <b>Saved Words: </b>
+                {songSavedWords.map((savedWord, index) => {
+                  const isLearned = savedWord ? savedWord.learned : false;
+                  return (
+                    <React.Fragment key={index}>
+                      <span
+                        className={"saved" + (isLearned ? " learned" : "")}
+                        onClick={() => handleWordClick(savedWord.word)}
+                      >
+                        {savedWord.word}
+                      </span>
+                      {index !== songSavedWords.length - 1 && ", "}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        ))}
-      <p>...</p>
-      <p>
-        Wanna delve deeper into the Dictionary? Check out the lyrics on{" "}
-        <Link to={song.links.genius}>Genius</Link>
-      </p>
+          <div className="save-unsave">
+            {session && isSongSaved ? (
+              <button onClick={() => handleUnsaveSong(song)}>
+                Remove Song
+              </button>
+            ) : (
+              <button onClick={() => handleSaveSong(song)}>Save Song</button>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="lyrics">
+        <b>Lyrics: </b>
+        {song.lyrics
+          .split(/\n\n/) // Split based on consecutive line breaks
+          .map((piece: string, index: number) => (
+            <div key={index}>
+              {piece.split("\n").map((line, lineIndex) => (
+                <p key={lineIndex}>
+                  {line
+                    .split(/(\b[\w'-]+\b|[^\w\s'])/)
+                    .map((segment, segmentIndex) => {
+                      const isWord = /\b[\w'-]+\b/.test(segment.trim());
+                      const savedWord = songSavedWords.find(
+                        (savedWord) =>
+                          savedWord.word.toLowerCase() ===
+                          segment.toLowerCase(),
+                      );
+                      const isSaved = savedWord ? true : false;
+                      const isLearned = savedWord ? savedWord.learned : false;
+
+                      return (
+                        <React.Fragment key={segmentIndex}>
+                          {isWord ? (
+                            <span
+                              className={`lyricsWord${isSaved ? " saved" + (isLearned ? " learned" : "") : ""}`}
+                              onClick={() => handleWordClick(segment)}
+                            >
+                              {segment}
+                            </span>
+                          ) : (
+                            segment
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                </p>
+              ))}
+              <p key={`empty-${index}`}>&nbsp;</p>
+            </div>
+          ))}
+        <p>...</p>
+        <p>
+          Wanna delve deeper? Check out the annotations on{" "}
+          <Link to={song.links.genius}>
+            <b>Genius</b>
+          </Link>
+        </p>
+      </div>
     </>
   );
 };

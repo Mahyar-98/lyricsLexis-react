@@ -125,6 +125,7 @@ header .nav {
 main {
   flex-grow: 1;
   padding: 1rem;
+  background: linear-gradient(45deg, #cccccc, #999999, #666666);
 }
 
 main .loading {
@@ -141,7 +142,6 @@ footer {
   font-size: 0.7rem;
   width: 100%;
   text-align: center;
-  margin-top: 4em;
   padding: 0.5em;
 }
 
@@ -178,13 +178,16 @@ footer svg {
   }
 
   header .nav {
+    margin: 0 auto;
+    width: 90%;
     display: flex;
+    justify-content: space-between;
   }
 
   header nav ul {
     display: flex;
     list-style-type: none;
-    gap: 3.5em;
+    gap: 6em;
     padding-left: 0;
     margin: 0;
     font-size: 0.9rem;

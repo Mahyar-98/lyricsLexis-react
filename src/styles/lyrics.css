@@ -1,0 +1,66 @@
+.song-info {
+  text-align: center;
+  padding-top: 1em;
+}
+
+.song-info > img {
+  width: 100%;
+  max-width: 300px;
+  border: 2px solid rgb(85, 85, 85);
+}
+
+div.song-info-right {
+  text-align: center;
+}
+
+div.song-info-right-top > div {
+  margin-top: 1em;
+}
+
+.save-unsave {
+  margin-top: 1em;
+}
+
+.lyrics {
+  margin-top: 2em;
+  text-align: center;
+}
+
+.lyricsWord {
+  background-color: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+.lyricsWord:hover {
+  opacity: 0.9;
+}
+
+.saved {
+  background-color: yellow;
+}
+
+.learned {
+  background-color: rgb(169, 238, 169);
+}
+
+@media (min-width: 750px) {
+  .song-info {
+    display: flex;
+    justify-content: center;
+    gap: 5%;
+    margin: 0 1em;
+  }
+
+  .song-info-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1em;
+  }
+
+  .song-info-right-top {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

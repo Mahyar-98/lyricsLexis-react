@@ -14,6 +14,7 @@ interface Word {
 const Layout = () => {
   const [loading, setLoading] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
+  const [dicOpen, setDicOpen] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [allSavedWords, setAllSavedWords] = useState([]);
   const [updateTrigger, setUpdateTrigger] = useState(false);
@@ -114,28 +115,28 @@ const Layout = () => {
               <li>
                 <Link to="/about">about</Link>
               </li>
-              {!session ? (
-                <>
-                  <li>
-                    <Link to="/signin">sign in</Link>
-                  </li>
-                  <li>
-                    <Link to="/signup">sign up</Link>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li>
-                    <Link to="/library">library</Link>
-                  </li>
-                  <li>
-                    <a href="#" onClick={handleSignOut}>
-                      sign out
-                    </a>
-                  </li>
-                </>
-              )}
             </ul>
+            {!session ? (
+              <ul>
+                <li>
+                  <Link to="/signin">sign in</Link>
+                </li>
+                <li>
+                  <Link to="/signup">sign up</Link>
+                </li>
+              </ul>
+            ) : (
+              <ul>
+                <li>
+                  <Link to="/library">library</Link>
+                </li>
+                <li>
+                  <a href="#" onClick={handleSignOut}>
+                    sign out
+                  </a>
+                </li>
+              </ul>
+            )}
           </nav>
         </div>
       </header>
@@ -237,6 +238,8 @@ const Layout = () => {
               setSession,
               allSavedWords,
               setAllSavedWords,
+              dicOpen,
+              setDicOpen,
               setUpdateTrigger,
             }}
           />
