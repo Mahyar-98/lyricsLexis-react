@@ -19,6 +19,24 @@ div.song-info-right-top > div {
 
 .save-unsave {
   margin-top: 1em;
+  display: flex;
+  justify-content: center;
+}
+
+.save-unsave > button {
+  background-color: inherit;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.save-unsave > button:hover {
+  background-color: inherit;
+  opacity: 0.8;
+  color: inherit;
+}
+.save-unsave svg {
+  width: 1.5em;
 }
 
 .lyrics {

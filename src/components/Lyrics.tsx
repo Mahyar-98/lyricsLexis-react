@@ -31,7 +31,7 @@ interface LyricsProps {
 const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
   const [isSongSaved, setIsSongSaved] = useState(false);
   const [songSavedWords, setSongSavedWords] = useState<Word[]>([]);
-  const { session, allSavedWords, setDicOpen } = useOutletContext();
+  const { session, allSavedWords, setDicOpen, setLoading } = useOutletContext();
 
   useEffect(() => {
     if (session && song && song.lyrics) {
@@ -57,10 +57,14 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
           } else {
             setIsSongSaved(false);
           }
+          setLoading(false);
         })
-        .catch(() => console.log("Song not found"));
+        .catch(() => {
+          console.log("Song not found");
+          setLoading(false);
+        });
     }
-  }, [song, session, isSongSaved, allSavedWords]);
+  }, [song, session, isSongSaved, allSavedWords, setLoading]);
 
   useEffect(() => {
     if (session && song && song.lyrics) {
@@ -89,10 +93,6 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
     }
   }, [song, session, allSavedWords]);
 
-  useEffect(() => {
-    console.log(songSavedWords);
-  }, [songSavedWords]);
-
   const handleSaveSong = async (song: Song) => {
     try {
       const response = await fetch(
@@ -109,6 +109,7 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
           body: JSON.stringify(song),
         },
       );
+      setLoading(false);
 
       if (response.ok) {
         console.log("Song saved successfully!");
@@ -141,6 +142,7 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
           },
         },
       );
+      setLoading(false);
 
       if (response.ok) {
         console.log("Song removed successfully!");
@@ -157,9 +159,6 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
 
   const handleWordClick = (word: string) => {
     setDicOpen(true);
-    fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word)
-      .then((res) => res.json())
-      .then((data) => console.log(data));
     setWord(word);
   };
 
@@ -189,7 +188,10 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
                     <React.Fragment key={index}>
                       <span
                         className={"saved" + (isLearned ? " learned" : "")}
-                        onClick={() => handleWordClick(savedWord.word)}
+                        onClick={() => {
+                          handleWordClick(savedWord.word);
+                          setLoading(true);
+                        }}
                       >
                         {savedWord.word}
                       </span>
@@ -202,11 +204,33 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
           </div>
           <div className="save-unsave">
             {session && isSongSaved ? (
-              <button onClick={() => handleUnsaveSong(song)}>
-                Remove Song
+              <button
+                className="remove"
+                title="remove song"
+                onClick={() => {
+                  handleUnsaveSong(song);
+                  setLoading(true);
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                </svg>
+                Remove
               </button>
             ) : (
-              <button onClick={() => handleSaveSong(song)}>Save Song</button>
+              <button
+                className="save"
+                title="save song"
+                onClick={() => {
+                  handleSaveSong(song);
+                  setLoading(true);
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+                </svg>
+                Save
+              </button>
             )}
           </div>
         </div>
@@ -236,7 +260,10 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
                           {isWord ? (
                             <span
                               className={`lyricsWord${isSaved ? " saved" + (isLearned ? " learned" : "") : ""}`}
-                              onClick={() => handleWordClick(segment)}
+                              onClick={() => {
+                                handleWordClick(segment);
+                                setLoading(true);
+                              }}
                             >
                               {segment}
                             </span>

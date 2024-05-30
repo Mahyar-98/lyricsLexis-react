@@ -46,11 +46,13 @@ const Library = () => {
     "word" | "learned" | "createdAt"
   >("word");
   const [wordSortOrder, setWordSortOrder] = useState<"asc" | "desc">("asc");
-  const { session, allSavedWords, dicOpen, setDicOpen } = useOutletContext();
+  const { session, allSavedWords, dicOpen, setDicOpen, setLoading } =
+    useOutletContext();
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    setLoading(true);
     if (!session) {
       navigate("/signin");
     } else {
@@ -68,10 +70,16 @@ const Library = () => {
         },
       )
         .then((res) => res.json())
-        .then((data) => setSavedSongs(data))
-        .catch(() => console.log("Error fetching saved songs"));
+        .then((data) => {
+          setSavedSongs(data);
+          setLoading(false);
+        })
+        .catch(() => {
+          console.log("Error fetching saved songs");
+          setLoading(false);
+        });
     }
-  }, [session, navigate]);
+  }, [session, navigate, setLoading]);
 
   const handleSongClick = (song: SavedSong) => {
     setSelectedWord(null);
@@ -84,8 +92,12 @@ const Library = () => {
         .then((res) => res.json())
         .then((data: ExternalSong) => {
           setSelectedSong(data);
+          setLoading(false);
         })
-        .catch(() => console.log("Error fetching song from external API"));
+        .catch(() => {
+          console.log("Error fetching song from external API");
+          setLoading(false);
+        });
     }
   };
 
@@ -191,7 +203,10 @@ const Library = () => {
                 (savedSong) => (
                   <li
                     key={savedSong.title}
-                    onClick={() => handleSongClick(savedSong)}
+                    onClick={() => {
+                      handleSongClick(savedSong);
+                      setLoading(true);
+                    }}
                     className={
                       selectedSong?.title === savedSong.title &&
                       selectedSong?.author === savedSong.author
@@ -219,7 +234,10 @@ const Library = () => {
               (savedWord) => (
                 <li
                   key={savedWord.word}
-                  onClick={() => handleWordClick(savedWord.word)}
+                  onClick={() => {
+                    handleWordClick(savedWord.word);
+                    setLoading(true);
+                  }}
                   className={`${savedWord.learned ? "learned" : ""}${selectedWord === savedWord.word ? " selected" : ""}`}
                 >
                   <b>{savedWord.word}</b>
@@ -239,7 +257,13 @@ const Library = () => {
 
       {selectedWord && dicOpen && <Dictionary word={selectedWord} />}
       {dicOpen && (
-        <div className="overlay" onClick={() => setDicOpen(false)}></div>
+        <div
+          className="overlay"
+          onClick={() => {
+            setDicOpen(false);
+            setSelectedWord(null);
+          }}
+        ></div>
       )}
     </div>
   );

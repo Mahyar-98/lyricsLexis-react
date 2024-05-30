@@ -28,15 +28,18 @@ const Home = () => {
   const [query, setQuery] = useState("");
   const [song, setSong] = useState<Song | null>(null);
   const [word, setWord] = useState<string | null>(null);
-  const { dicOpen, setDicOpen } = useOutletContext();
+  const { dicOpen, setDicOpen, loading, setLoading } = useOutletContext();
 
   useEffect(() => {
     if (query) {
       fetch("https://some-random-api.com/others/lyrics/?title=" + query)
         .then((res) => res.json())
-        .then((data) => setSong(data));
+        .then((data) => {
+          setSong(data);
+          setLoading(false);
+        });
     }
-  }, [query]);
+  }, [query, setLoading]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,6 +52,7 @@ const Home = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setQuery((searchData.song + " " + searchData.artist).trim());
+    setLoading(true);
   };
 
   const handleBackToSearch = () => {
@@ -60,7 +64,9 @@ const Home = () => {
     <div className="home">
       {song && (
         <div className="back-to-search">
-          <button onClick={handleBackToSearch}>Back to search</button>
+          <button className="btn" onClick={handleBackToSearch}>
+            Back to search
+          </button>
         </div>
       )}
       <div className="container">
@@ -83,7 +89,7 @@ const Home = () => {
               <input type="text" name="song" onChange={handleInputChange} />
               <label htmlFor="artist">Artist: </label>
               <input type="text" name="artist" onChange={handleInputChange} />
-              <button className="form-button">Find lyrics</button>
+              <button className="form-button btn">Find lyrics</button>
             </form>
           </div>
         )}

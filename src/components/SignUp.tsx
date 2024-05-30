@@ -1,6 +1,6 @@
 import "../styles/signup.css";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
 interface SignUpData {
   first_name: string;
@@ -19,6 +19,7 @@ const SignUp = () => {
     confirm_password: "",
   });
   const [errors, setErrors] = useState<Partial<SignUpData>>({});
+  const { setLoading } = useOutletContext();
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,6 +81,7 @@ const SignUp = () => {
   const handleSignUp = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateSignUp()) {
+      setLoading(true);
       fetch(import.meta.env.VITE_BACKEND_URL + "/users", {
         method: "POST",
         headers: {
@@ -88,6 +90,7 @@ const SignUp = () => {
         body: JSON.stringify(signUpData),
       })
         .then((res) => {
+          setLoading(false);
           if (res.ok) {
             // Redirect to homepage
             navigate("/");
@@ -95,7 +98,10 @@ const SignUp = () => {
             console.error("Error: ", res.status);
           }
         })
-        .catch((err) => console.error("Error: ", err));
+        .catch((err) => {
+          console.error("Error: ", err);
+          setLoading(false);
+        });
     }
   };
 
@@ -131,7 +137,7 @@ const SignUp = () => {
           {errors.confirm_password && (
             <small className="error">{errors.confirm_password}</small>
           )}
-          <button>Create Account</button>
+          <button className="btn">Create Account</button>
         </form>
         <p>
           Already have an account? Click <Link to="/signin">here</Link> to sign

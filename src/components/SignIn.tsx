@@ -14,7 +14,7 @@ const SignIn = () => {
   });
   const [errors, setErrors] = useState<Partial<SignInData>>({});
   const navigate = useNavigate();
-  const { setSession } = useOutletContext(); //TODO: add the type
+  const { setSession, setLoading } = useOutletContext(); //TODO: add the type
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -57,6 +57,7 @@ const SignIn = () => {
   const handleSignIn = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateSignUp()) {
+      setLoading(true);
       try {
         const response = await fetch(
           import.meta.env.VITE_BACKEND_URL + "/signin",
@@ -68,6 +69,7 @@ const SignIn = () => {
             body: JSON.stringify(signInData),
           },
         );
+        setLoading(false);
         if (response.ok) {
           const session = await response.json();
           // Store token in local storage
@@ -97,7 +99,7 @@ const SignIn = () => {
         <label htmlFor="password">Password: </label>
         <input type="password" name="password" onChange={handleInputChange} />
         {errors.password && <small className="error">{errors.password}</small>}
-        <button>Sign In</button>
+        <button className="btn">Sign In</button>
       </form>
       <p>
         Don't have an account? Click <Link to="/signup">here</Link> to sign up

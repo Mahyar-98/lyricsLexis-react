@@ -1,6 +1,7 @@
 import "../styles/layout.css";
 import { useState, useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import Loading from "./Loading";
 
 interface Session {
   token: string;
@@ -227,23 +228,20 @@ const Layout = () => {
         <div className="overlay" onClick={() => setNavOpen(false)}></div>
       )}
       <main>
-        {loading ? (
-          <div className="loading">
-            <h2>The page is loading...</h2>
-          </div>
-        ) : (
-          <Outlet
-            context={{
-              session,
-              setSession,
-              allSavedWords,
-              setAllSavedWords,
-              dicOpen,
-              setDicOpen,
-              setUpdateTrigger,
-            }}
-          />
-        )}
+        {loading && <Loading />}
+        <Outlet
+          context={{
+            session,
+            setSession,
+            allSavedWords,
+            setAllSavedWords,
+            dicOpen,
+            setDicOpen,
+            setUpdateTrigger,
+            loading,
+            setLoading,
+          }}
+        />
       </main>
       <footer>
         <div>

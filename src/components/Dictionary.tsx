@@ -43,16 +43,19 @@ const Dictionary = ({ word }: { word: string }) => {
   const [note, setNote] = useState("");
   const [showNoteForm, setShowNoteForm] = useState(false);
   const [noteInput, setNoteInput] = useState("");
-  const { session, setAllSavedWords, setUpdateTrigger, dicOpen } =
+  const { session, setAllSavedWords, setUpdateTrigger, dicOpen, setLoading } =
     useOutletContext(); //TODO: add the type
 
   useEffect(() => {
     if (word) {
       fetch(import.meta.env.VITE_BACKEND_URL + "/api/dictionary/" + word)
         .then((res) => res.json())
-        .then((data) => setMeanings(data));
+        .then((data) => {
+          setMeanings(data);
+          setLoading(false);
+        });
     }
-  }, [word]);
+  }, [word, setLoading]);
 
   useEffect(() => {
     setNote(""); // Reset note state
@@ -74,10 +77,8 @@ const Dictionary = ({ word }: { word: string }) => {
         .then((res) => {
           if (res.ok) {
             setIsWordSaved(true);
-            return res.json();
           } else {
             setIsWordSaved(false);
-            return {};
           }
         })
         .then((data) => {
@@ -104,6 +105,7 @@ const Dictionary = ({ word }: { word: string }) => {
           body: JSON.stringify({ word }),
         },
       );
+      setLoading(false);
 
       if (response.ok) {
         console.log("Word saved successfully!");
@@ -136,6 +138,7 @@ const Dictionary = ({ word }: { word: string }) => {
           },
         },
       );
+      setLoading(false);
 
       if (response.ok) {
         console.log("Word removed successfully!");
@@ -169,6 +172,7 @@ const Dictionary = ({ word }: { word: string }) => {
           body: JSON.stringify({ learned: !isLearned }), // Toggle learned status
         },
       );
+      setLoading(false);
 
       if (response.ok) {
         console.log("Word learned status updated successfully!");
@@ -209,6 +213,7 @@ const Dictionary = ({ word }: { word: string }) => {
           body: JSON.stringify({ note: noteInput.trim() }), // Send noteInput in the request body
         },
       );
+      setLoading(false);
 
       if (response.ok) {
         console.log("Note added successfully!");
@@ -241,11 +246,12 @@ const Dictionary = ({ word }: { word: string }) => {
           body: JSON.stringify({ note: "" }), // Clear the note
         },
       );
-  
+      setLoading(false);
+
       if (response.ok) {
         console.log("Note deleted successfully!");
         setNote("");
-        setNoteInput("")
+        setNoteInput("");
         setShowNoteForm(false);
       } else {
         console.log("Failed to delete note:", response.statusText);
@@ -268,27 +274,44 @@ const Dictionary = ({ word }: { word: string }) => {
           <div className="word-operations">
             {session && isWordSaved ? (
               <>
-                <button className="save-unsave-btn remove" title="remove word" onClick={() => handleUnsaveWord(word.toLowerCase())}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>                </button>
+                <button
+                  className="save-unsave-btn remove"
+                  title="remove word"
+                  onClick={() => {
+                    handleUnsaveWord(word.toLowerCase());
+                    setLoading(true);
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                  </svg>
+                </button>
                 <div className="learned-cb">
                   <input
                     type="checkbox"
                     checked={isLearned}
-                    onChange={handleCheckboxChange}
+                    onChange={() => {
+                      handleCheckboxChange();
+                      setLoading(true);
+                    }}
                   />
                   <label>I've learned this word</label>
                 </div>
                 <div className="note">
-                  {showNoteForm ? 
-                  (
+                  {showNoteForm ? (
                     <form
                       className="note-content"
-                      onSubmit={handleNoteSubmit}
+                      onSubmit={(e) => {
+                        handleNoteSubmit(e);
+                        setLoading(true);
+                      }}
                     >
                       <div className="note-header">
                         <b>Note</b>
                         <div className="note-btns">
-                          <button onClick={() => setShowNoteForm(false)}>Cancel</button>
+                          <button onClick={() => setShowNoteForm(false)}>
+                            Cancel
+                          </button>
                           <button type="submit">Done</button>
                         </div>
                       </div>
@@ -307,16 +330,22 @@ const Dictionary = ({ word }: { word: string }) => {
                       <div className="note-header">
                         <b>Note</b>
                         <div className="note-btns">
-
-                        <button onClick={() => setShowNoteForm(true)}>
-                          Edit
-                        </button>
-                        <button onClick={handleDeleteNote}>Delete</button>
+                          <button onClick={() => setShowNoteForm(true)}>
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleDeleteNote();
+                              setLoading(true);
+                            }}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
                       <hr />
                       <p>{note}</p>
-                      </div>
+                    </div>
                   ) : (
                     <button onClick={() => setShowNoteForm(true)}>
                       Add a note
@@ -325,8 +354,18 @@ const Dictionary = ({ word }: { word: string }) => {
                 </div>
               </>
             ) : (
-              <button className="save-unsave-btn save" title="save word" onClick={() => handleSaveWord(word.toLowerCase())}>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>              </button>
+              <button
+                className="save-unsave-btn save"
+                title="save word"
+                onClick={() => {
+                  handleSaveWord(word.toLowerCase());
+                  setLoading(true);
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+                </svg>
+              </button>
             )}
           </div>
           {meanings.map((meaning, index) => (

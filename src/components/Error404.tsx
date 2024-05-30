@@ -8,7 +8,7 @@ const Error404 = () => {
       <h2>404 - Not Found</h2>
       <p>The page you&apos;re looking for does not exists or is unavailable!</p>
       <p>You could go back to the homepage by clicking the button below:</p>
-      <button>
+      <button className="btn">
         <Link to="/">Homepage</Link>
       </button>
     </div>

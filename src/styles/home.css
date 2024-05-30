@@ -16,11 +16,12 @@ p.home_description {
   text-align: center;
 }
 
-button.form-button {
+button.btn {
   margin-top: 1em;
   padding: 8px 16px;
-  background-color: #007bff;
+  background-color: steelblue;
   color: #fff;
+  font-weight: bold;
   border: none;
   border-radius: 4px;
   cursor: pointer;
