@@ -90,12 +90,14 @@ const SignIn = () => {
           const errorData = await response.json();
           throw new Error(errorData.message);
         }
-      } catch (error: unknown) {
-        // TODO: update the error type
-        console.error("Error: ", error.message);
-        // Handle error (e.g., display error message to the user)
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error("Error: ", error.message);
+        } else {
+          console.error("Unknown error occurred");
+        }
       }
-    }
+    } 
   };
 
   return (

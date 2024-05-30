@@ -67,8 +67,11 @@ const Layout = () => {
         localStorage.removeItem("token"); // Remove invalid token from local storage
       }
     } catch (error) {
-      console.error("Error validating token: ", error.message);
-      // Handle error (e.g., display error message to the user)
+      if (error instanceof Error) {
+        console.error("Error: ", error.message);
+      } else {
+        console.error("Unknown error occurred");
+      }
     }
   };
 
