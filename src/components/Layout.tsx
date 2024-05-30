@@ -8,10 +8,6 @@ interface Session {
   userId: string;
 }
 
-interface Word {
-  word: string;
-}
-
 const Layout = () => {
   const [loading, setLoading] = useState(false);
   const [navOpen, setNavOpen] = useState(false);

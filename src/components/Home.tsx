@@ -20,6 +20,12 @@ interface Song {
   error?: string;
 }
 
+interface OutletContextType {
+  dicOpen: boolean;
+  setDicOpen: (dicOpen: boolean) => void;
+  setLoading: (loading: boolean) => void;
+}
+
 const Home = () => {
   const [searchData, setSearchData] = useState({
     song: "",
@@ -28,7 +34,8 @@ const Home = () => {
   const [query, setQuery] = useState("");
   const [song, setSong] = useState<Song | null>(null);
   const [word, setWord] = useState<string | null>(null);
-  const { dicOpen, setDicOpen, loading, setLoading } = useOutletContext();
+  const { dicOpen, setDicOpen, setLoading } =
+    useOutletContext() as OutletContextType;
 
   useEffect(() => {
     if (query) {

@@ -36,6 +36,25 @@ interface WordData {
   meanings: Definition[];
 }
 
+interface Session {
+  token: string;
+  userId: string;
+}
+
+interface SavedWord {
+  word: string;
+  learned: boolean;
+  note: string;
+  createdAt: string;
+}
+interface OutletContextType {
+  session: Session;
+  setAllSavedWords: (words: SavedWord[]) => void;
+  setUpdateTrigger: (trigger: boolean | ((prev: boolean) => boolean)) => void;
+  dicOpen: boolean;
+  setLoading: (loading: boolean) => void;
+}
+
 const Dictionary = ({ word }: { word: string }) => {
   const [meanings, setMeanings] = useState<WordData[] | null>(null);
   const [isWordSaved, setIsWordSaved] = useState(false);
@@ -44,7 +63,7 @@ const Dictionary = ({ word }: { word: string }) => {
   const [showNoteForm, setShowNoteForm] = useState(false);
   const [noteInput, setNoteInput] = useState("");
   const { session, setAllSavedWords, setUpdateTrigger, dicOpen, setLoading } =
-    useOutletContext(); //TODO: add the type
+    useOutletContext() as OutletContextType;
 
   useEffect(() => {
     if (word) {
@@ -77,11 +96,12 @@ const Dictionary = ({ word }: { word: string }) => {
         .then((res) => {
           if (res.ok) {
             setIsWordSaved(true);
+            return res.json();
           } else {
             setIsWordSaved(false);
           }
         })
-        .then((data) => {
+        .then((data: SavedWord) => {
           setIsLearned(data.learned || false);
           setNote(data.note || "");
         })
@@ -177,7 +197,7 @@ const Dictionary = ({ word }: { word: string }) => {
       if (response.ok) {
         console.log("Word learned status updated successfully!");
         setIsLearned(!isLearned); // Toggle local state
-        setUpdateTrigger((prev: boolean) => !prev);
+        setUpdateTrigger((prev) => !prev);
       } else {
         console.log(
           "Failed to update word learned status:",

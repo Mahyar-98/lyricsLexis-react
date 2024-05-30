@@ -19,7 +19,8 @@ const SignUp = () => {
     confirm_password: "",
   });
   const [errors, setErrors] = useState<Partial<SignUpData>>({});
-  const { setLoading } = useOutletContext();
+  const { setLoading }: { setLoading: (loading: boolean) => void } =
+    useOutletContext();
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

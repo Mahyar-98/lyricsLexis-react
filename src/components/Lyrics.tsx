@@ -2,6 +2,10 @@ import "../styles/lyrics.css";
 import React, { useState, useEffect } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 
+interface Session {
+  token: string;
+  userId: string;
+}
 interface Song {
   title: string;
   author: string;
@@ -21,6 +25,7 @@ interface Word {
   word: string;
   learned: boolean;
   note: string;
+  createdAt: string;
 }
 
 interface LyricsProps {
@@ -28,10 +33,18 @@ interface LyricsProps {
   setWord: (word: string) => void;
 }
 
+interface OutletContextType {
+  session: Session;
+  allSavedWords: Word[];
+  setDicOpen: (dicOpen: boolean) => void;
+  setLoading: (loading: boolean) => void;
+}
+
 const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
   const [isSongSaved, setIsSongSaved] = useState(false);
   const [songSavedWords, setSongSavedWords] = useState<Word[]>([]);
-  const { session, allSavedWords, setDicOpen, setLoading } = useOutletContext();
+  const { session, allSavedWords, setDicOpen, setLoading } =
+    useOutletContext() as OutletContextType;
 
   useEffect(() => {
     if (session && song && song.lyrics) {

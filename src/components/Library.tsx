@@ -1,10 +1,14 @@
 import "../styles/library.css";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import Dictionary from "./Dictionary";
 import Lyrics from "./Lyrics";
 import { DateTime } from "luxon";
 
+interface Session {
+  token: string;
+  userId: string;
+}
 interface SavedSong {
   title: string;
   author: string;
@@ -33,6 +37,14 @@ interface ExternalSong {
   error?: string;
 }
 
+interface OutletContextType {
+  session: Session;
+  allSavedWords: SavedWord[];
+  dicOpen: boolean;
+  setDicOpen: (dicOpen: boolean) => void;
+  setLoading: (loading: boolean) => void;
+}
+
 const Library = () => {
   const [savedSongs, setSavedSongs] = useState<SavedSong[]>([]);
   const [showSongs, setShowSongs] = useState(true);
@@ -47,7 +59,7 @@ const Library = () => {
   >("word");
   const [wordSortOrder, setWordSortOrder] = useState<"asc" | "desc">("asc");
   const { session, allSavedWords, dicOpen, setDicOpen, setLoading } =
-    useOutletContext();
+    useOutletContext() as OutletContextType;
 
   const navigate = useNavigate();
 
@@ -106,22 +118,29 @@ const Library = () => {
     setDicOpen(true);
   };
 
-  const sortItems = (items: any[], sortBy: string, sortOrder: string) => {
+  const sortItems = <T extends SavedSong | SavedWord>(
+    items: T[],
+    sortBy: keyof T,
+    sortOrder: "asc" | "desc",
+  ): T[] => {
     return items.sort((a, b) => {
+      const aValue = a[sortBy] as unknown as string | number | Date;
+      const bValue = b[sortBy] as unknown as string | number | Date;
+
       if (sortBy === "createdAt") {
         return sortOrder === "asc"
-          ? new Date(a[sortBy]).getTime() - new Date(b[sortBy]).getTime()
-          : new Date(b[sortBy]).getTime() - new Date(a[sortBy]).getTime();
+          ? new Date(aValue).getTime() - new Date(bValue).getTime()
+          : new Date(bValue).getTime() - new Date(aValue).getTime();
       } else if (
         sortBy === "title" ||
         sortBy === "author" ||
         sortBy === "word"
       ) {
         return sortOrder === "asc"
-          ? a[sortBy].localeCompare(b[sortBy])
-          : b[sortBy].localeCompare(a[sortBy]);
+          ? aValue.toString().localeCompare(bValue.toString())
+          : bValue.toString().localeCompare(aValue.toString());
       } else if (sortBy === "learned") {
-        return sortOrder === "asc" ? (a[sortBy] ? 1 : -1) : a[sortBy] ? -1 : 1;
+        return sortOrder === "asc" ? (aValue ? 1 : -1) : aValue ? -1 : 1;
       }
       return 0;
     });

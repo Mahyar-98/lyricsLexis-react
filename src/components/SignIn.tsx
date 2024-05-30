@@ -6,6 +6,16 @@ interface SignInData {
   password: string;
 }
 
+interface Session {
+  token: string;
+  userId: string;
+}
+
+interface OutletContextType {
+  setSession: (session: Session) => void;
+  setLoading: (loading: boolean) => void;
+}
+
 const SignIn = () => {
   const [signInData, setSignInData] = useState<SignInData>({
     email: "",
@@ -13,7 +23,7 @@ const SignIn = () => {
   });
   const [errors, setErrors] = useState<Partial<SignInData>>({});
   const navigate = useNavigate();
-  const { setSession, setLoading } = useOutletContext(); //TODO: add the type
+  const { setSession, setLoading } = useOutletContext() as OutletContextType; //TODO: add the type
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
