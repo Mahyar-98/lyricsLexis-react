@@ -1,0 +1,24 @@
+.about .small-container {
+  min-width: 240px;
+  width: 90%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.about h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.6em;
+}
+
+.about i {
+  color: black;
+  display: block;
+  margin: 2em auto;
+}
+
+.about a {
+  text-decoration: underline;
+}
+.about a:hover {
+  opacity: 0.8;
+}
