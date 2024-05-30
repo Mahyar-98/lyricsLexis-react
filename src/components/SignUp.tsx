@@ -1,3 +1,4 @@
+import "../styles/signup.css";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -99,40 +100,45 @@ const SignUp = () => {
   };
 
   return (
-    <>
-      <p>Please sign up:</p>
-      <form action="" onSubmit={handleSignUp}>
-        <label htmlFor="first_name">First Name: </label>
-        <input type="text" name="first_name" onChange={handleInputChange} />
-        {errors.first_name && (
-          <small className="error">{errors.first_name}</small>
-        )}
-        <label htmlFor="last_name">Last Name: </label>
-        <input type="text" name="last_name" onChange={handleInputChange} />
-        {errors.last_name && (
-          <small className="error">{errors.last_name}</small>
-        )}
-        <label htmlFor="email">Email Address: </label>
-        <input type="text" name="email" onChange={handleInputChange} />
-        {errors.email && <small className="error">{errors.email}</small>}
-        <label htmlFor="password">Password: </label>
-        <input type="password" name="password" onChange={handleInputChange} />
-        {errors.password && <small className="error">{errors.password}</small>}
-        <label htmlFor="confirm_password">Confirm Password: </label>
-        <input
-          type="password"
-          name="confirm_password"
-          onChange={handleInputChange}
-        />
-        {errors.confirm_password && (
-          <small className="error">{errors.confirm_password}</small>
-        )}
-        <button>Create Account</button>
-      </form>
-      <p>
-        Already have an account? Click <Link to="/signin">here</Link> to sign in
-      </p>
-    </>
+    <div className="sign-in">
+      <div className="container">
+        <p>Please sign up:</p>
+        <form action="" onSubmit={handleSignUp}>
+          <label htmlFor="first_name">First Name: </label>
+          <input type="text" name="first_name" onChange={handleInputChange} />
+          {errors.first_name && (
+            <small className="error">{errors.first_name}</small>
+          )}
+          <label htmlFor="last_name">Last Name: </label>
+          <input type="text" name="last_name" onChange={handleInputChange} />
+          {errors.last_name && (
+            <small className="error">{errors.last_name}</small>
+          )}
+          <label htmlFor="email">Email Address: </label>
+          <input type="text" name="email" onChange={handleInputChange} />
+          {errors.email && <small className="error">{errors.email}</small>}
+          <label htmlFor="password">Password: </label>
+          <input type="password" name="password" onChange={handleInputChange} />
+          {errors.password && (
+            <small className="error">{errors.password}</small>
+          )}
+          <label htmlFor="confirm_password">Confirm Password: </label>
+          <input
+            type="password"
+            name="confirm_password"
+            onChange={handleInputChange}
+          />
+          {errors.confirm_password && (
+            <small className="error">{errors.confirm_password}</small>
+          )}
+          <button>Create Account</button>
+        </form>
+        <p>
+          Already have an account? Click <Link to="/signin">here</Link> to sign
+          in
+        </p>
+      </div>
+    </div>
   );
 };
 

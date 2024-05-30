@@ -1,0 +1,109 @@
+.library-btns {
+  width: 80%;
+  margin: 1em auto;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  border: 2px solid var(--font-color);
+  border-radius: 2em;
+  overflow: hidden;
+}
+
+.library-btns > button {
+  font-weight: bold;
+  padding: 0.5em;
+  flex: 1;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background-color: var(--container-bg-color);
+}
+
+.library-btns button:first-child {
+  border-right: 1px solid var(--container-bg-color);
+}
+
+.library-btns button:last-child {
+  border-left: 1px solid var(--container-bg-color);
+}
+
+.library-content {
+  display: block;
+  margin-bottom: 1.5em;
+}
+
+.sort-options {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 2em;
+}
+
+.sort-options > div {
+  display: flex;
+  gap: 0.2em;
+}
+
+.saved-songs {
+  margin-top: 2em;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(240px, 1fr)
+  ); /* Two columns */
+  grid-gap: 20px;
+  list-style: none;
+}
+
+.saved-songs li {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+}
+
+.saved-songs li:hover,
+.saved-songs li.selected {
+  background-color: #f3f3f3;
+  border: 1px solid #929292;
+}
+
+.saved-songs li small {
+  position: absolute;
+  bottom: 5px; /* Push to the bottom */
+  right: 5px; /* Push to the right */
+  font-size: 0.8em;
+  justify-self: end; /* Align to the end horizontally */
+  align-self: end; /* Align to the end vertically */
+}
+
+.saved-songs > li > p {
+  margin: 0;
+}
+
+.saved-words {
+  margin-top: 2em;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(120px, 1fr)
+  ); /* Two columns */
+  grid-gap: 20px;
+  list-style: none;
+}
+
+.saved-words li {
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+.saved-words li:hover,
+.saved-words li.selected {
+  border: 1px solid #929292;
+}

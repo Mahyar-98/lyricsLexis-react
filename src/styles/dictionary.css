@@ -1,0 +1,186 @@
+.side-dic {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 80%;
+  height: 100%;
+  padding: 0 1em;
+  background-color: var(--bg-color);
+  transition: right 0.3s ease; /* Changed from left to right */
+  z-index: 999;
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+
+.side-dic-content {
+  height: calc(100% - 40px); /* Adjust height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.side-dic.show {
+  right: 0;
+}
+
+.word-operations {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1em;
+  position: relative;;
+}
+
+.save-unsave-btn {
+  width: 2.5em;
+  border: none;
+  position: absolute;
+  right: 5%;
+}
+.save-unsave-btn:hover {
+  background-color: white;
+  opacity: 0.8;
+}
+
+.save-unsave-btn.save {
+  fill: green;
+}
+.save-unsave-btn.remove {
+  fill: maroon;
+}
+
+
+.learned-cb input {
+  width: 15px;
+  margin: 0 .3em;
+}
+
+.learned-cb label {
+  margin: 0;
+}
+
+.note {
+  width: 90%;
+  max-width: 500px;
+}
+
+.note-content {
+  background-color: var(--note_bg_color);
+  border: 2px solid var(--note-border-color);
+  border-radius: 1em;
+  padding: 0.3em;
+}
+
+.note-header {
+  padding: 0 0.5em;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.note-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .3em;
+}
+
+.note-content div>button {
+  background-color: var(--note_bg_color);
+  font-size: .75em;
+}
+.note-content div > button, .note>button {
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  margin-left: .5em;
+}
+.note-content div > button:hover, .note>button:hover {
+  opacity: 0.8;
+  color: inherit;
+}
+.note>button:hover {
+  background-color: white;
+}
+
+.note-content hr {
+  width: 100%;
+  color: var(--note-border-color);
+  margin: 0;
+}
+
+.note-content textarea {
+  background-color: var(--note_bg_color);
+  border: none;
+  border-radius: 1em;
+  padding: 0.5em;
+  width: 100%;
+  height: auto;
+  overflow-y: auto;
+  margin-top: 0.5em;
+  resize: vertical;
+  outline: none;
+}
+
+.note-content>p {
+  margin: .7em .5em;
+}
+
+.pronunciations {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.pronunciation {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.2em;
+}
+
+.pronunciation > p {
+  margin: 0;
+}
+
+.speaker {
+  width: 30px;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+.speaker:hover {
+  border: none;
+  background-color: white;
+}
+
+.speaker svg {
+  fill: maroon;
+}
+
+.definition {
+  margin-bottom: 2em;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+.meaning {
+  margin-bottom: 1em;
+}
+
+.meaning p {
+  margin: 0;
+}
+
+.syn-ant {
+  margin-top: 2em;
+  margin-left: 1.5em;
+}
+
+.syn-ant p {
+  margin: 0.5em;
+}

@@ -1,5 +1,6 @@
+import "../styles/library.css";
 import React, { useState, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import Dictionary from "./Dictionary";
 import Lyrics from "./Lyrics";
 import { DateTime } from "luxon";
@@ -45,10 +46,14 @@ const Library = () => {
     "word" | "learned" | "createdAt"
   >("word");
   const [wordSortOrder, setWordSortOrder] = useState<"asc" | "desc">("asc");
-  const { session, allSavedWords } = useOutletContext();
+  const { session, allSavedWords, dicOpen, setDicOpen } = useOutletContext();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (session) {
+    if (!session) {
+      navigate("/signin");
+    } else {
       fetch(
         import.meta.env.VITE_BACKEND_URL +
           "/users/" +
@@ -66,7 +71,7 @@ const Library = () => {
         .then((data) => setSavedSongs(data))
         .catch(() => console.log("Error fetching saved songs"));
     }
-  }, [session]);
+  }, [session, navigate]);
 
   const handleSongClick = (song: SavedSong) => {
     setSelectedWord(null);
@@ -86,6 +91,7 @@ const Library = () => {
 
   const handleWordClick = (word: string) => {
     setSelectedWord(word);
+    setDicOpen(true);
   };
 
   const sortItems = (items: any[], sortBy: string, sortOrder: string) => {
@@ -121,82 +127,120 @@ const Library = () => {
 
   return (
     <div>
-      <h1>Library</h1>
-      <div>
-        <button onClick={() => setShowSongs(true)}>Saved Songs</button>
-        <button onClick={() => setShowSongs(false)}>Saved Words</button>
+      <div className="library-btns">
+        <button
+          className={showSongs ? "selected" : ""}
+          onClick={() => setShowSongs(true)}
+        >
+          Saved Songs
+        </button>
+        <button
+          className={!showSongs ? "selected" : ""}
+          onClick={() => setShowSongs(false)}
+        >
+          Saved Words
+        </button>
       </div>
-      <div>
+      <div className="container library-content">
+        <div className="sort-options">
+          <div>
+            {" "}
+            sort by:
+            <select
+              onChange={(e) =>
+                showSongs
+                  ? handleSongSortChange(e.target.value)
+                  : handleWordSortChange(e.target.value)
+              }
+            >
+              {showSongs ? (
+                <>
+                  <option value="title">title</option>
+                  <option value="author">artist</option>
+                  <option value="createdAt">date</option>
+                </>
+              ) : (
+                <>
+                  <option value="word">alphabet</option>
+                  <option value="learned">learned</option>
+                  <option value="createdAt">date</option>
+                </>
+              )}
+            </select>
+          </div>
+          <div>
+            {" "}
+            order:
+            <select
+              onChange={(e) =>
+                showSongs
+                  ? setSongSortOrder(e.target.value as "asc" | "desc")
+                  : setWordSortOrder(e.target.value as "asc" | "desc")
+              }
+            >
+              <option value="asc">ascending</option>
+              <option value="desc">descending</option>
+            </select>
+          </div>
+        </div>
+
         {showSongs ? (
-          <div>
-            Sort by:
-            <button onClick={() => handleSongSortChange("title")}>Title</button>
-            <button onClick={() => handleSongSortChange("author")}>
-              Artist
-            </button>
-            <button onClick={() => handleSongSortChange("createdAt")}>
-              Date
-            </button>
-          </div>
-        ) : (
-          <div>
-            Sort by:
-            <button onClick={() => handleWordSortChange("word")}>Word</button>
-            <button onClick={() => handleWordSortChange("learned")}>
-              Learned
-            </button>
-            <button onClick={() => handleWordSortChange("createdAt")}>
-              Date
-            </button>
-          </div>
-        )}
-      </div>
-      {showSongs ? (
-        savedSongs.length > 0 ? (
-          <ul>
-            {sortItems(savedSongs, songSortBy, songSortOrder).map(
-              (savedSong) => (
+          savedSongs.length > 0 ? (
+            <ul className="saved-songs">
+              {sortItems(savedSongs, songSortBy, songSortOrder).map(
+                (savedSong) => (
+                  <li
+                    key={savedSong.title}
+                    onClick={() => handleSongClick(savedSong)}
+                    className={
+                      selectedSong?.title === savedSong.title &&
+                      selectedSong?.author === savedSong.author
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    <b>{savedSong.title}</b>
+                    <p>by: {savedSong.author}</p>
+                    <small>
+                      {DateTime.fromISO(savedSong.createdAt).toFormat(
+                        "MMMM dd, yyyy",
+                      )}
+                    </small>
+                  </li>
+                ),
+              )}
+            </ul>
+          ) : (
+            <p>No saved songs found.</p>
+          )
+        ) : allSavedWords.length > 0 ? (
+          <ul className="saved-words">
+            {sortItems(allSavedWords, wordSortBy, wordSortOrder).map(
+              (savedWord) => (
                 <li
-                  key={savedSong.title}
-                  onClick={() => handleSongClick(savedSong)}
+                  key={savedWord.word}
+                  onClick={() => handleWordClick(savedWord.word)}
+                  className={`${savedWord.learned ? "learned" : ""}${selectedWord === savedWord.word ? " selected" : ""}`}
                 >
-                  <b>{savedSong.title}</b>
-                  <p>by: {savedSong.author}</p>
-                  <small>
-                    saved on:{" "}
-                    {DateTime.fromISO(savedSong.createdAt).toFormat(
-                      "MMMM dd, yyyy",
-                    )}
-                  </small>
+                  <b>{savedWord.word}</b>
                 </li>
               ),
             )}
           </ul>
         ) : (
-          <p>No saved songs found.</p>
-        )
-      ) : allSavedWords.length > 0 ? (
-        <ul>
-          {sortItems(allSavedWords, wordSortBy, wordSortOrder).map(
-            (savedWord) => (
-              <li
-                key={savedWord.word}
-                onClick={() => handleWordClick(savedWord.word)}
-              >
-                <b className={savedWord.learned ? "learned" : ""}>
-                  {savedWord.word}
-                </b>
-              </li>
-            ),
-          )}
-        </ul>
-      ) : (
-        <p>No saved words found.</p>
-      )}
+          <p>No saved words found.</p>
+        )}
+      </div>
       {showSongs && selectedSong && (
-        <Lyrics song={selectedSong} setWord={setSelectedWord} />
+        <div className="container">
+          <Lyrics song={selectedSong} setWord={setSelectedWord} />
+        </div>
       )}
-      {selectedWord && <Dictionary word={selectedWord} />}
+
+      {selectedWord && dicOpen && <Dictionary word={selectedWord} />}
+      {dicOpen && (
+        <div className="overlay" onClick={() => setDicOpen(false)}></div>
+      )}
     </div>
   );
 };

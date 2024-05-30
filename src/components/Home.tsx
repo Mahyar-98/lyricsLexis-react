@@ -63,7 +63,7 @@ const Home = () => {
           <button onClick={handleBackToSearch}>Back to search</button>
         </div>
       )}
-      <div className="home_container">
+      <div className="container">
         {song && song.lyrics ? (
           <>
             <Lyrics song={song} setWord={setWord} />
@@ -88,7 +88,7 @@ const Home = () => {
           </div>
         )}
       </div>
-      {word && dicOpen ? <Dictionary word={word} /> : null}
+      {word && dicOpen && <Dictionary word={word} />}
       {dicOpen && (
         <div className="overlay" onClick={() => setDicOpen(false)}></div>
       )}

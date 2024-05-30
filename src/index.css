@@ -6,25 +6,17 @@
 }
 
 :root {
-  --light-font-color: #213547;
-  --light-bg-color: #ffffff;
-  --light-header-color: #f5f5f5;
-  --light-border-color: var(--light-font-color);
-  --light-hover-color: rgba(0, 0, 0, 0.05);
-  --light-yellow-font-color: #a9792b;
-  --light-yellow-bg-color: #ffcc66;
-  --light-post-link-color: #4e6bff;
-
-  --dark-font-color: #ffffff;
-  --dark-bg-color: #111827;
-  --dark-header-color: #0e1320;
-  --dark-border-color: var(--dark-font-color);
-  --dark-hover-color: rgba(0, 0, 0, 0.4);
-  --dark-yellow-font-color: var(--light-yellow-bg-color);
-  --dark-yellow-bg-color: var(--light-yellow-font-color);
-  --dark-post-link-color: #72aaff;
-
+  --font-color: #213547;
+  --bg-color: #ffffff;
+  --header-color: #fff;
+  --header-bg-color: #333;
+  --border-color: var(--light-font-color);
+  --hover-color: rgba(0, 0, 0, 0.05);
+  --post-link-color: #4e6bff;
   --shadow-color: rgba(0, 0, 0, 0.1);
+  --container-bg-color: rgba(255, 255, 255, 0.8);
+  --note_bg_color: antiquewhite;
+  --note-border-color: rgb(255, 219, 172);
 
   --left-border-color: #ccc;
   --left-border: 2px solid var(--left-border-color);
@@ -55,27 +47,8 @@ body {
 }
 
 div.layout {
-  --font-color: var(--light-font-color);
-  --bg-color: var(--light-bg-color);
-  --header-color: var(--light-header-color);
-  --border-color: var(--light-border-color);
-  --hover-color: var(--light-hover-color);
-  --yellow-font-color: var(--light-yellow-font-color);
-  --yellow-bg-color: var(--light-yellow-bg-color);
-  --post-link-color: var(--light-post-link-color);
-
   color: var(--font-color);
   background-color: var(--bg-color);
-}
-div.layout.dark {
-  --font-color: var(--dark-font-color);
-  --bg-color: var(--dark-bg-color);
-  --header-color: var(--dark-header-color);
-  --border-color: var(--dark-border-color);
-  --hover-color: var(--dark-hover-color);
-  --yellow-font-color: var(--dark-yellow-font-color);
-  --yellow-bg-color: var(--dark-yellow-bg-color);
-  --post-link-color: var(--dark-post-link-color);
 }
 
 h1 {
@@ -103,7 +76,8 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+button:hover,
+button.selected {
   color: var(--bg-color);
   background-color: var(--font-color);
   /* opacity: 0.8; */
@@ -138,35 +112,15 @@ a {
   color: inherit;
 }
 
-a.underlined,
-.post-body a {
-  text-decoration: underline;
-}
-.post-body a {
-  color: var(--post-link-color);
-}
-a.underlined:hover,
-a.hover-opacity:hover,
-.post-body a:hover {
-  opacity: 0.8;
-}
-
-svg {
-  fill: var(--yellow-font-color);
-}
-
-li {
-  list-style-type: none;
-}
-
 .container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding-right: 1em;
-  padding-left: 1em;
-}
-.container-small {
-  max-width: 750px;
+  max-width: 1000px;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px; /* Adjust border radius as needed */
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 
 .title {
@@ -176,20 +130,30 @@ li {
   text-align: center;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 form small {
   color: red;
 }
 
-.lyricsWord {
-  background-color: rgba(0, 0, 0, 0.05);
+label {
+  font-weight: bold;
+  margin-right: 5px;
+  margin-bottom: 0.2em;
 }
 
-.saved {
-  background-color: yellow;
-}
-
-.learned {
-  background-color: rgb(169, 238, 169);
+input {
+  padding: 8px;
+  margin-right: 10px;
+  margin-bottom: 1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
 }
 
 @media (min-width: 600px) {

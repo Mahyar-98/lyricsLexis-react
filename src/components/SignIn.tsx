@@ -1,3 +1,4 @@
+import "../styles/signin.css";
 import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
@@ -87,7 +88,7 @@ const SignIn = () => {
   };
 
   return (
-    <>
+    <div className="container">
       <p>Please sign in:</p>
       <form action="" onSubmit={handleSignIn}>
         <label htmlFor="email">Email Address: </label>
@@ -101,7 +102,7 @@ const SignIn = () => {
       <p>
         Don't have an account? Click <Link to="/signup">here</Link> to sign up
       </p>
-    </>
+    </div>
   );
 };
 
