@@ -1,0 +1,42 @@
+.signup {
+  margin-top: 3em;
+}
+
+.signup p {
+  text-align: center;
+}
+
+.signup p > a {
+  text-decoration: underline;
+}
+.signup p > a:hover {
+  opacity: 0.8;
+}
+
+.form-input {
+  max-width: 370px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+}
+
+@media (min-width: 750px) {
+  .form-input {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin-bottom: 2em;
+  }
+
+  .form-input > input {
+    margin: 0;
+  }
+
+  .error {
+    position: absolute;
+    bottom: -50%;
+    left: 47%;
+  }
+}

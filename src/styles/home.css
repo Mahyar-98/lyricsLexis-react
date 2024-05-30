@@ -16,6 +16,10 @@ p.home_description {
   text-align: center;
 }
 
+.search-input {
+  margin-bottom: 1em;
+}
+
 button.btn {
   margin-top: 1em;
   padding: 8px 16px;

@@ -86,9 +86,19 @@ const Home = () => {
             </p>
             <form action="#" method="GET" onSubmit={handleSearch}>
               <label htmlFor="song">Song: </label>
-              <input type="text" name="song" onChange={handleInputChange} />
+              <input
+                className="search-input"
+                type="text"
+                name="song"
+                onChange={handleInputChange}
+              />
               <label htmlFor="artist">Artist: </label>
-              <input type="text" name="artist" onChange={handleInputChange} />
+              <input
+                className="search-input"
+                type="text"
+                name="artist"
+                onChange={handleInputChange}
+              />
               <button className="form-button btn">Find lyrics</button>
             </form>
           </div>

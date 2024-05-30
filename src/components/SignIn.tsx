@@ -1,4 +1,3 @@
-import "../styles/signin.css";
 import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
@@ -90,20 +89,31 @@ const SignIn = () => {
   };
 
   return (
-    <div className="container">
-      <p>Please sign in:</p>
-      <form action="" onSubmit={handleSignIn}>
-        <label htmlFor="email">Email Address: </label>
-        <input type="text" name="email" onChange={handleInputChange} />
-        {errors.email && <small className="error">{errors.email}</small>}
-        <label htmlFor="password">Password: </label>
-        <input type="password" name="password" onChange={handleInputChange} />
-        {errors.password && <small className="error">{errors.password}</small>}
-        <button className="btn">Sign In</button>
-      </form>
-      <p>
-        Don't have an account? Click <Link to="/signup">here</Link> to sign up
-      </p>
+    <div className="signup">
+      <div className="container">
+        <form action="" onSubmit={handleSignIn}>
+          <div className="form-input">
+            <label htmlFor="email">Email Address: </label>
+            <input type="text" name="email" onChange={handleInputChange} />
+            {errors.email && <small className="error">{errors.email}</small>}
+          </div>
+          <div className="form-input">
+            <label htmlFor="password">Password: </label>
+            <input
+              type="password"
+              name="password"
+              onChange={handleInputChange}
+            />
+            {errors.password && (
+              <small className="error">{errors.password}</small>
+            )}
+          </div>
+          <button className="btn">Sign In</button>
+        </form>
+        <p>
+          Don't have an account? Click <Link to="/signup">here</Link> to sign up
+        </p>
+      </div>
     </div>
   );
 };
