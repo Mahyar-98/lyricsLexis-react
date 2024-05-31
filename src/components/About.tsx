@@ -54,9 +54,10 @@ const About = () => {
               Free Dictionary API
             </a>{" "}
             for word definitions. While these APIs serve their respective
-            purposes, they may not always provide complete or accurate results.
-            Lyrics may be truncated and incomplete, and word definitions might
-            vary from other sources.
+            purposes, they may not always provide complete or accurate results
+            or have all the data that you might expect. Lyrics to lots of songs
+            may not exist in their data or be truncated and incomplete, and word
+            definitions might vary from other sources.
           </i>
         </div>
       </div>

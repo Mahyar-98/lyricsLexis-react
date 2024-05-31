@@ -63,6 +63,7 @@
   border-radius: 5px;
   cursor: pointer;
   position: relative;
+  height: 80px;
 }
 
 .saved-songs li:hover,

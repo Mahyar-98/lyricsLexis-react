@@ -97,7 +97,7 @@ const SignIn = () => {
           console.error("Unknown error occurred");
         }
       }
-    } 
+    }
   };
 
   return (
