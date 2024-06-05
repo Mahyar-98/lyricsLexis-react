@@ -6,10 +6,12 @@
   text-align: center;
 }
 
-.signup p > a {
+.signup p > a,
+a.here {
   text-decoration: underline;
 }
-.signup p > a:hover {
+.signup p > a:hover,
+a.here:hover {
   opacity: 0.8;
 }
 
