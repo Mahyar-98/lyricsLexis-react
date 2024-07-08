@@ -1,30 +1,36 @@
-# React + TypeScript + Vite
+# LyricsLexis
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Overview**  
+LyricsLexis is a personal educational React project designed to help English learners expand their vocabulary through music. If you’re a music enthusiast who loves learning languages through songs, this app is perfect for you. With LyricsLexis, you can look up the lyrics to any song you’re listening to, and if you come across any word you don’t know, just click on the word to see its dictionary definition. Check it out [here](http://your-web-app-url.com).
 
-Currently, two official plugins are available:
+You could also check out the [backend repository](https://github.com/Mahyar-98/lyricsLexis-backend) which is built using Express.js.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Features**  
+- Look up the lyrics to your favorite songs.
+- Look up the definitions of unfamiliar words.
+- Practice and learn new words with phonetics, pronunciation, examples, synonyms, and antonyms.
+- Create an account for library feautures
+- Save songs to revisit later.
+- Save words for later study.
+- Use your library to navigate through all your saved words and songs.
+- Add notes to your saved words or mark them as learned words.
 
-## Expanding the ESLint configuration
+**Running the Project**  
+To run the project locally, follow these steps:
+1. Clone the project repository to your local machine.
+2. Navigate to the project directory.
+3. Run `npm install` in your command line to install dependencies.
+4. Run `npm run dev` to start the development server.
+5. Open your browser and go to `http://localhost:3000` to view the project.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+**Dependencies**  
+- React
+- React-DOM
+- TypeScript
+- Vite
+- ESLint
+- Prettier
+- Luxon
 
-- Configure the top-level `parserOptions` property like this:
+Enjoy expanding your vocabulary with LyricsLexis!
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
