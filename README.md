@@ -1,7 +1,7 @@
 # LyricsLexis
 
 **Overview**  
-LyricsLexis is a personal educational React project designed to help English learners expand their vocabulary through music. If you’re a music enthusiast who loves learning languages through songs, this app is perfect for you. With LyricsLexis, you can look up the lyrics to any song you’re listening to, and if you come across any word you don’t know, just click on the word to see its dictionary definition. Check it out [here](http://your-web-app-url.com).
+LyricsLexis is a personal educational React project designed to help English learners expand their vocabulary through music. If you’re a music enthusiast who loves learning languages through songs, this app is perfect for you. With LyricsLexis, you can look up the lyrics to any song you’re listening to, and if you come across any word you don’t know, just click on the word to see its dictionary definition. Check it out [here](https://sweet-sunflower-59001b.netlify.app/).
 
 You could also check out the [backend repository](https://github.com/Mahyar-98/lyricsLexis-backend) which is built using Express.js.
 
