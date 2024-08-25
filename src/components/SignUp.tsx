@@ -1,6 +1,7 @@
 import "../styles/signup.css";
 import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { signupValidator } from "../utils/ValidationStrategy";
 
 interface SignUpData {
   first_name: string;
@@ -32,51 +33,14 @@ const SignUp = () => {
   };
 
   const validateSignUp = () => {
-    let isValid = true;
-    const newErrors: Partial<SignUpData> = {};
-
-    if (!signUpData.first_name.trim()) {
-      newErrors.first_name = "Your first name is required";
-      isValid = false;
-    }
-
-    if (!signUpData.last_name.trim()) {
-      newErrors.last_name = "Your last name is required";
-      isValid = false;
-    }
-
-    if (!signUpData.email.trim()) {
-      newErrors.email = "Your email address is required";
-      isValid = false;
-    } else if (
-      !signUpData.email
-        .trim()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        )
-    ) {
-      newErrors.email = "Email address is invalid";
-      isValid = false;
-    }
-
-    if (!signUpData.password.trim()) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    } else if (signUpData.password.length < 6) {
-      newErrors.password = "Should have min 6 characters";
-      isValid = false;
-    }
-
-    if (!signUpData.confirm_password.trim()) {
-      newErrors.confirm_password = "Please re-type the password";
-      isValid = false;
-    } else if (signUpData.confirm_password !== signUpData.password) {
-      newErrors.confirm_password = "Passwords do not match";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
+        // Use the validationStrategy utility
+        const result = signupValidator.validate(signUpData)
+    
+        if (typeof(result) == "object") {
+          setErrors(result)
+          return false
+        }
+        return true;
   };
 
   const handleSignUp = (e: React.ChangeEvent<HTMLFormElement>) => {

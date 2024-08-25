@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { signinValidator } from "../utils/ValidationStrategy";
 
 interface SignInData {
   email: string;
@@ -33,39 +34,20 @@ const SignIn = () => {
     }));
   };
 
-  const validateSignUp = () => {
-    let isValid = true;
-    const newErrors: Partial<SignInData> = {};
-
-    if (!signInData.email.trim()) {
-      newErrors.email = "Your email address is required";
-      isValid = false;
-    } else if (
-      !signInData.email
-        .trim()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        )
-    ) {
-      newErrors.email = "Email address is invalid";
-      isValid = false;
+  const validateSignIn = () => {
+    // Use the validationStrategy util
+    const result = signinValidator.validate(signInData)
+    
+    if (typeof(result) == "object") {
+      setErrors(result)
+      return false
     }
-
-    if (!signInData.password.trim()) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    } else if (signInData.password.length < 6) {
-      newErrors.password = "Password should be minimum 6 characters long";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
+    return true;
   };
 
   const handleSignIn = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateSignUp()) {
+    if (validateSignIn()) {
       setLoading(true);
       try {
         const response = await fetch(
