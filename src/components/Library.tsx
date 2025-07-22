@@ -24,17 +24,10 @@ interface SavedWord {
 
 interface ExternalSong {
   title: string;
-  author: string;
+  artist: string;
   lyrics: string;
-  thumbnail: {
-    genius: string;
-  };
-  links: {
-    genius: string;
-  };
-  disclaimer: string;
-  source: number;
-  error?: string;
+  thumbnail: string;
+  url: string;
 }
 
 interface OutletContextType {
@@ -248,7 +241,7 @@ const Library = () => {
                     }}
                     className={
                       selectedSong?.title === savedSong.title &&
-                      selectedSong?.author === savedSong.author
+                      selectedSong?.artist === savedSong.author
                         ? "selected"
                         : ""
                     }
