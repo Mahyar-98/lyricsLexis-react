@@ -5,19 +5,14 @@ import Dictionary from "./Dictionary";
 import Lyrics from "./Lyrics";
 import { useOutletContext } from "react-router-dom";
 
+const token = import.meta.env.VITE_SOME_RANDOM_API_TOKEN;
+
 interface Song {
   title: string;
-  author: string;
+  artist: string;
   lyrics: string;
-  thumbnail: {
-    genius: string;
-  };
-  links: {
-    genius: string;
-  };
-  disclaimer: string;
-  source: number;
-  error?: string;
+  thumbnail: string;
+  url: string;
 }
 
 interface OutletContextType {
@@ -39,7 +34,13 @@ const Home = () => {
 
   useEffect(() => {
     if (query) {
-      fetch("https://some-random-api.com/others/lyrics/?title=" + query)
+      fetch("https://api.some-random-api.com/lyrics?title=" + query, {
+        method: "GET",
+        headers: {
+          "Authorization": token,
+          "Content-Type": "application/json",
+        }
+      })
         .then((res) => res.json())
         .then((data) => {
           setSong(data);
@@ -80,10 +81,6 @@ const Home = () => {
         {song && song.lyrics ? (
           <>
             <Lyrics song={song} setWord={setWord} />
-          </>
-        ) : song && song.error ? (
-          <>
-            <p>Sorry! We couldn't find the song</p>
           </>
         ) : (
           <div>

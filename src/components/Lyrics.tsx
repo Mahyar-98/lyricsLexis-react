@@ -8,17 +8,10 @@ interface Session {
 }
 interface Song {
   title: string;
-  author: string;
+  artist: string;
   lyrics: string;
-  thumbnail: {
-    genius: string;
-  };
-  links: {
-    genius: string;
-  };
-  disclaimer: string;
-  source: number;
-  error?: string;
+  thumbnail: string;
+  url: string;
 }
 
 interface Word {
@@ -53,7 +46,7 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
           "/users/" +
           session.userId +
           "/songs/" +
-          encodeURIComponent(song.author) +
+          encodeURIComponent(song.artist) +
           "/" +
           encodeURIComponent(song.title),
         {
@@ -144,7 +137,7 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
           "/users/" +
           session.userId +
           "/songs/" +
-          encodeURIComponent(song.author) +
+          encodeURIComponent(song.artist) +
           "/" +
           encodeURIComponent(song.title),
         {
@@ -179,14 +172,14 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
     <>
       <div className="song-info">
         <img
-          src={song.thumbnail.genius}
-          alt={song.title + " track cover by " + song.author}
+          src={song.thumbnail}
+          alt={song.title + " track cover by " + song.artist}
         />
         <div className="song-info-right">
           <div className="song-info-right-top">
             <div>
               <b>Artist: </b>
-              {song.author}
+              {song.artist}
             </div>
             <div>
               <b>Title: </b>
@@ -301,13 +294,6 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
               <p key={`empty-${index}`}>&nbsp;</p>
             </div>
           ))}
-        <p>...</p>
-        <p>
-          Wanna delve deeper? Check out the annotations on{" "}
-          <Link to={song.links.genius}>
-            <b>Genius</b>
-          </Link>
-        </p>
       </div>
     </>
   );
