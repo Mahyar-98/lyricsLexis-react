@@ -1,12 +1,12 @@
 import "../styles/layout.css";
 import { useState, useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
+
+// Import components
 import Loading from "./Loading";
 
-interface Session {
-  token: string;
-  userId: string;
-}
+// Import types
+import Session from "@/types/Session";
 
 const Layout = () => {
   const [loading, setLoading] = useState(false);

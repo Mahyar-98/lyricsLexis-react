@@ -2,15 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { signinValidator } from "../utils/ValidationStrategy";
 
-interface SignInData {
-  email: string;
-  password: string;
-}
-
-interface Session {
-  token: string;
-  userId: string;
-}
+// Import types
+import UserCredentials from "@/types/UserCredentials";
+import Session from "@/types/Session";
 
 interface OutletContextType {
   setSession: (session: Session) => void;
@@ -18,11 +12,11 @@ interface OutletContextType {
 }
 
 const SignIn = () => {
-  const [signInData, setSignInData] = useState<SignInData>({
+  const [signInData, setSignInData] = useState<UserCredentials>({
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState<Partial<SignInData>>({});
+  const [errors, setErrors] = useState<Partial<UserCredentials>>({});
   const navigate = useNavigate();
   const { setSession, setLoading } = useOutletContext() as OutletContextType; //TODO: add the type
 

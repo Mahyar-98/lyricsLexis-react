@@ -2,40 +2,24 @@ import "../styles/lyrics.css";
 import React, { useState, useEffect } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 
-interface Session {
-  token: string;
-  userId: string;
-}
-interface Song {
-  title: string;
-  artist: string;
-  lyrics: string;
-  thumbnail: string;
-  url: string;
-}
-
-interface Word {
-  word: string;
-  learned: boolean;
-  note: string;
-  createdAt: string;
-}
-
-interface LyricsProps {
-  song: Song;
-  setWord: (word: string) => void;
-}
+// Import types
+import Song from "@/types/Song";
+import SavedWord from "@/types/SavedWord";
+import Session from "@/types/Session";
 
 interface OutletContextType {
   session: Session;
-  allSavedWords: Word[];
+  allSavedWords: SavedWord[];
   setDicOpen: (dicOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
 }
 
-const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
+const Lyrics: React.FC<{
+  song: Song;
+  setWord: (word: string) => void;
+}> = ({ song, setWord }) => {
   const [isSongSaved, setIsSongSaved] = useState(false);
-  const [songSavedWords, setSongSavedWords] = useState<Word[]>([]);
+  const [songSavedWords, setSongSavedWords] = useState<SavedWord[]>([]);
   const { session, allSavedWords, setDicOpen, setLoading } =
     useOutletContext() as OutletContextType;
 
@@ -74,7 +58,7 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
 
   useEffect(() => {
     if (session && song && song.lyrics) {
-      const savedWordsInLyrics: Word[] = []; // Array to store saved words found in lyrics
+      const savedWordsInLyrics: SavedWord[] = []; // Array to store saved words found in lyrics
 
       // Split lyrics into words
       const words = song.lyrics.match(/\b[\w'-]+\b/g);
@@ -84,7 +68,7 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
         words.forEach((word) => {
           // Find the word object in allSavedWords array by matching the word
           const foundWord = allSavedWords.find(
-            (savedWord: Word) => savedWord.word === word.toLowerCase(),
+            (savedWord: SavedWord) => savedWord.word === word.toLowerCase(),
           );
 
           // If the word object is found and not already included in savedWordsInLyrics, add it

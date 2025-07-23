@@ -3,23 +3,18 @@ import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { signupValidator } from "../utils/ValidationStrategy";
 
-interface SignUpData {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-  confirm_password: string;
-}
+// Import types
+import UserInfo from "@/types/UserInfo";
 
 const SignUp = () => {
-  const [signUpData, setSignUpData] = useState<SignUpData>({
+  const [signUpData, setSignUpData] = useState<UserInfo>({
     first_name: "",
     last_name: "",
     email: "",
     password: "",
     confirm_password: "",
   });
-  const [errors, setErrors] = useState<Partial<SignUpData>>({});
+  const [errors, setErrors] = useState<Partial<UserInfo>>({});
   const { setLoading }: { setLoading: (loading: boolean) => void } =
     useOutletContext();
   const navigate = useNavigate();

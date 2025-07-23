@@ -1,25 +1,22 @@
 import "../styles/home.css";
 import React from "react";
 import { useEffect, useState } from "react";
-import Dictionary from "./Dictionary";
-import Lyrics from "./Lyrics";
 import { useOutletContext } from "react-router-dom";
 
-const token = import.meta.env.VITE_SOME_RANDOM_API_TOKEN;
+// Import components
+import Dictionary from "./Dictionary";
+import Lyrics from "./Lyrics";
 
-interface Song {
-  title: string;
-  artist: string;
-  lyrics: string;
-  thumbnail: string;
-  url: string;
-}
+// Import types
+import Song from "@/types/Song";
 
 interface OutletContextType {
   dicOpen: boolean;
   setDicOpen: (dicOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
 }
+
+const token = import.meta.env.VITE_SOME_RANDOM_API_TOKEN;
 
 const Home = () => {
   const [searchData, setSearchData] = useState({

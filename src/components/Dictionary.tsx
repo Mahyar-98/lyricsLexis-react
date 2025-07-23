@@ -2,52 +2,12 @@ import "../styles/dictionary.css";
 import { useEffect, useState } from "react";
 import { useOutletContext, Link } from "react-router-dom";
 
-interface Pronunciation {
-  text: string;
-  audio: string;
-  sourceUrl: string;
-  license: {
-    name: string;
-    url: string;
-  };
-}
+// Import types
+import Session from "@/types/Session";
+import Word from "@/types/Word";
+import SavedWord from "@/types/SavedWord";
 
-interface Definition {
-  partOfSpeech: string;
-  definitions: {
-    definition: string;
-    synonyms: string[];
-    antonyms: string[];
-    example: string;
-  }[];
-  synonyms: string[];
-  antonyms: string[];
-  sourceUrls: string[];
-  license: {
-    name: string;
-    url: string;
-  };
-}
-
-interface WordData {
-  word: string;
-  phonetic: string;
-  phonetics: Pronunciation[];
-  meanings: Definition[];
-}
-
-interface Session {
-  token: string;
-  userId: string;
-}
-
-interface SavedWord {
-  word: string;
-  learned: boolean;
-  note: string;
-  createdAt: string;
-}
-interface OutletContextType {
+interface OutletContext {
   session: Session;
   setAllSavedWords: (words: SavedWord[]) => void;
   setUpdateTrigger: (trigger: boolean | ((prev: boolean) => boolean)) => void;
@@ -56,14 +16,14 @@ interface OutletContextType {
 }
 
 const Dictionary = ({ word }: { word: string }) => {
-  const [meanings, setMeanings] = useState<WordData[] | null>(null);
+  const [meanings, setMeanings] = useState<Word[] | null>(null);
   const [isWordSaved, setIsWordSaved] = useState(false);
   const [isLearned, setIsLearned] = useState(false);
   const [note, setNote] = useState("");
   const [showNoteForm, setShowNoteForm] = useState(false);
   const [noteInput, setNoteInput] = useState("");
   const { session, setAllSavedWords, setUpdateTrigger, dicOpen, setLoading } =
-    useOutletContext() as OutletContextType;
+    useOutletContext() as OutletContext;
 
   useEffect(() => {
     if (word) {

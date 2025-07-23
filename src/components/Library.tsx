@@ -1,36 +1,17 @@
 import "../styles/library.css";
 import { useState, useEffect } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import Dictionary from "./Dictionary";
-import Lyrics from "./Lyrics";
 import { DateTime } from "luxon";
 
-const token = import.meta.env.VITE_SOME_RANDOM_API_TOKEN;
+// Import components
+import Dictionary from "./Dictionary";
+import Lyrics from "./Lyrics";
 
-interface Session {
-  token: string;
-  userId: string;
-}
-interface SavedSong {
-  title: string;
-  artist: string;
-  createdAt: string;
-}
-
-interface SavedWord {
-  word: string;
-  learned: boolean;
-  note: string;
-  createdAt: string;
-}
-
-interface ExternalSong {
-  title: string;
-  artist: string;
-  lyrics: string;
-  thumbnail: string;
-  url: string;
-}
+// Import types
+import Session from "@/types/Session";
+import SavedWord from "@/types/SavedWord";
+import Song from "@/types/Song";
+import SavedSong from "@/types/SavedSong";
 
 interface OutletContextType {
   session: Session;
@@ -40,10 +21,12 @@ interface OutletContextType {
   setLoading: (loading: boolean) => void;
 }
 
+const token = import.meta.env.VITE_SOME_RANDOM_API_TOKEN;
+
 const Library = () => {
   const [savedSongs, setSavedSongs] = useState<SavedSong[]>([]);
   const [showSongs, setShowSongs] = useState(true);
-  const [selectedSong, setSelectedSong] = useState<ExternalSong | null>(null);
+  const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [songSortBy, setSongSortBy] = useState<
     "title" | "artist" | "createdAt"
@@ -160,7 +143,7 @@ const Library = () => {
         },
       )
         .then((res) => res.json())
-        .then((data: ExternalSong) => {
+        .then((data: Song) => {
           setSelectedSong(data);
           setLoading(false);
         })
