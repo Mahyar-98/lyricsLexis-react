@@ -37,9 +37,9 @@ const Home = () => {
       fetch("https://api.some-random-api.com/lyrics?title=" + query, {
         method: "GET",
         headers: {
-          "Authorization": token,
+          Authorization: token,
           "Content-Type": "application/json",
-        }
+        },
       })
         .then((res) => res.json())
         .then((data) => {

@@ -75,7 +75,7 @@ const Dictionary = ({ word }: { word: string }) => {
         })
         .catch((err) => {
           console.error("Error fetching dictionary data: ", err);
-          setLoading(false)
+          setLoading(false);
         });
     }
   }, [word, setLoading]);

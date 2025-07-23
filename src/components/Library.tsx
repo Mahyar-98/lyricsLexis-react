@@ -5,13 +5,15 @@ import Dictionary from "./Dictionary";
 import Lyrics from "./Lyrics";
 import { DateTime } from "luxon";
 
+const token = import.meta.env.VITE_SOME_RANDOM_API_TOKEN;
+
 interface Session {
   token: string;
   userId: string;
 }
 interface SavedSong {
   title: string;
-  author: string;
+  artist: string;
   createdAt: string;
 }
 
@@ -44,7 +46,7 @@ const Library = () => {
   const [selectedSong, setSelectedSong] = useState<ExternalSong | null>(null);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [songSortBy, setSongSortBy] = useState<
-    "title" | "author" | "createdAt"
+    "title" | "artist" | "createdAt"
   >("title");
   const [songSortOrder, setSongSortOrder] = useState<"asc" | "desc">("asc");
   const [wordSortBy, setWordSortBy] = useState<
@@ -95,7 +97,7 @@ const Library = () => {
           : "asc"
         : "asc",
     );
-    setSongSortBy(sortBy as "title" | "author" | "createdAt");
+    setSongSortBy(sortBy as "title" | "artist" | "createdAt");
   };
 
   // Handle sort change for words
@@ -126,7 +128,7 @@ const Library = () => {
           : new Date(bValue).getTime() - new Date(aValue).getTime();
       } else if (
         sortBy === "title" ||
-        sortBy === "author" ||
+        sortBy === "artist" ||
         sortBy === "word"
       ) {
         return sortOrder === "asc"
@@ -145,9 +147,17 @@ const Library = () => {
     setSelectedWord(null);
     if (session) {
       fetch(
-        "https://some-random-api.com/others/lyrics/?title=" +
-          song.title +
-          song.author,
+        "https://api.some-random-api.com/lyrics?title=" +
+          song.artist +
+          " " +
+          song.title,
+        {
+          method: "GET",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        },
       )
         .then((res) => res.json())
         .then((data: ExternalSong) => {
@@ -199,7 +209,7 @@ const Library = () => {
               {showSongs ? (
                 <>
                   <option value="title">title</option>
-                  <option value="author">artist</option>
+                  <option value="artist">artist</option>
                   <option value="createdAt">date</option>
                 </>
               ) : (
@@ -241,13 +251,13 @@ const Library = () => {
                     }}
                     className={
                       selectedSong?.title === savedSong.title &&
-                      selectedSong?.artist === savedSong.author
+                      selectedSong?.artist === savedSong.artist
                         ? "selected"
                         : ""
                     }
                   >
                     <b>{savedSong.title}</b>
-                    <p>by: {savedSong.author}</p>
+                    <p>by: {savedSong.artist}</p>
                     <small>
                       {DateTime.fromISO(savedSong.createdAt).toFormat(
                         "MMMM dd, yyyy",

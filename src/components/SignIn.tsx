@@ -36,11 +36,11 @@ const SignIn = () => {
 
   const validateSignIn = () => {
     // Use the validationStrategy util
-    const result = signinValidator.validate(signInData)
-    
-    if (typeof(result) == "object") {
-      setErrors(result)
-      return false
+    const result = signinValidator.validate(signInData);
+
+    if (typeof result == "object") {
+      setErrors(result);
+      return false;
     }
     return true;
   };

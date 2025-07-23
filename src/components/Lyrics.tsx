@@ -251,50 +251,52 @@ const Lyrics: React.FC<LyricsProps> = ({ song, setWord }) => {
           )}
         </div>
       </div>
-      <div className="lyrics">
-        <b>Lyrics: </b>
-        {song.lyrics
-          .split(/\n\n/) // Split based on consecutive line breaks
-          .map((piece: string, index: number) => (
-            <div key={index}>
-              {piece.split("\n").map((line, lineIndex) => (
-                <p key={lineIndex}>
-                  {line
-                    .split(/(\b[\w'-]+\b|[^\w\s'])/)
-                    .map((segment, segmentIndex) => {
-                      const isWord = /\b[\w'-]+\b/.test(segment.trim());
-                      const savedWord = songSavedWords.find(
-                        (savedWord) =>
-                          savedWord.word.toLowerCase() ===
-                          segment.toLowerCase(),
-                      );
-                      const isSaved = savedWord ? true : false;
-                      const isLearned = savedWord ? savedWord.learned : false;
+      {song.lyrics ? (
+        song.lyrics.split(/\n\n/).map((piece: string, index: number) => (
+          <div key={index}>
+            {piece.split("\n").map((line, lineIndex) => (
+              <p key={lineIndex}>
+                {line
+                  .split(/(\b[\w'-]+\b|[^\w\s'])/)
+                  .map((segment, segmentIndex) => {
+                    const isWord = /\b[\w'-]+\b/.test(segment.trim());
+                    const savedWord = songSavedWords.find(
+                      (savedWord) =>
+                        savedWord.word.toLowerCase() === segment.toLowerCase(),
+                    );
+                    const isSaved = !!savedWord;
+                    const isLearned = savedWord?.learned;
 
-                      return (
-                        <React.Fragment key={segmentIndex}>
-                          {isWord ? (
-                            <span
-                              className={`lyricsWord${isSaved ? " saved" + (isLearned ? " learned" : "") : ""}`}
-                              onClick={() => {
-                                handleWordClick(segment);
-                                setLoading(true);
-                              }}
-                            >
-                              {segment}
-                            </span>
-                          ) : (
-                            segment
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-                </p>
-              ))}
-              <p key={`empty-${index}`}>&nbsp;</p>
-            </div>
-          ))}
-      </div>
+                    return (
+                      <React.Fragment key={segmentIndex}>
+                        {isWord ? (
+                          <span
+                            className={`lyricsWord${
+                              isSaved
+                                ? " saved" + (isLearned ? " learned" : "")
+                                : ""
+                            }`}
+                            onClick={() => {
+                              handleWordClick(segment);
+                              setLoading(true);
+                            }}
+                          >
+                            {segment}
+                          </span>
+                        ) : (
+                          segment
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+              </p>
+            ))}
+            <p key={`empty-${index}`}>&nbsp;</p>
+          </div>
+        ))
+      ) : (
+        <p>Lyrics not available.</p>
+      )}
     </>
   );
 };

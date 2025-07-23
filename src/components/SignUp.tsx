@@ -33,14 +33,14 @@ const SignUp = () => {
   };
 
   const validateSignUp = () => {
-        // Use the validationStrategy utility
-        const result = signupValidator.validate(signUpData)
-    
-        if (typeof(result) == "object") {
-          setErrors(result)
-          return false
-        }
-        return true;
+    // Use the validationStrategy utility
+    const result = signupValidator.validate(signUpData);
+
+    if (typeof result == "object") {
+      setErrors(result);
+      return false;
+    }
+    return true;
   };
 
   const handleSignUp = (e: React.ChangeEvent<HTMLFormElement>) => {
