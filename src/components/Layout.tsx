@@ -8,6 +8,9 @@ import Loading from "./Loading";
 // Import types
 import Session from "@/types/Session";
 
+// Import utils
+import { verifyToken } from "@/utils/auth";
+
 const Layout = () => {
   const [loading, setLoading] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
@@ -21,7 +24,11 @@ const Layout = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      verifyToken(token); // Set logged-in state to true if token is present
+      verifyToken(token)
+        .then((res) => setSession(res)) // Set logged-in state to true if token is present
+        .catch((err) =>
+          console.error("Token verification failed in Layout component: ", err),
+        );
     }
   }, []);
 
@@ -36,7 +43,7 @@ const Layout = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session.token}`, // Include token in Authorization header
+            Authorization: `Bearer ${session.token}`,
           },
         },
       )
@@ -45,35 +52,6 @@ const Layout = () => {
         .catch(() => console.log("Words not found"));
     }
   }, [session, updateTrigger]);
-
-  const verifyToken = async (token: string) => {
-    try {
-      const response = await fetch(
-        import.meta.env.VITE_BACKEND_URL + "/verify-token",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include token in Authorization header
-          },
-        },
-      );
-      if (response.ok) {
-        const session = await response.json();
-        setSession(session); // Set logged-in state to true if token is valid
-      } else {
-        // Token is invalid or expired
-        setSession(null);
-        localStorage.removeItem("token"); // Remove invalid token from local storage
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error: ", error.message);
-      } else {
-        console.error("Unknown error occurred");
-      }
-    }
-  };
 
   const handleLinkClick = () => {
     setNavOpen(false); // Close the side navigation
