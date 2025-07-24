@@ -1,4 +1,3 @@
-import "../styles/signup.css";
 import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
@@ -6,7 +5,10 @@ import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import UserInfo from "@/types/UserInfo";
 
 // Import utils
-import { signupValidator } from "@/utils/ValidationStrategy";
+import { signupValidator } from "@/utils/validationStrategy";
+
+// Import styles
+import "@/styles/signup.css";
 
 const SignUp = () => {
   const [signUpData, setSignUpData] = useState<UserInfo>({

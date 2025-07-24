@@ -1,4 +1,5 @@
-import "../styles/loading.css";
+// Import styles
+import "@/styles/loading.css";
 
 const Loading = () => {
   return (

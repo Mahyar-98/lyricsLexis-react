@@ -37,6 +37,7 @@ div.song-info-right-top > div {
 }
 .save-unsave svg {
   width: 1.5em;
+  height: auto;
 }
 
 .lyrics {

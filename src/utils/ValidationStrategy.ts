@@ -1,19 +1,11 @@
+// Import types
+import UserInfo from "@/types/UserInfo";
+import UserCredentials from "@/types/UserCredentials";
+
+// Import utils
 import { emailRegex } from "./emailRegex";
 
-type SignupData = {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-  confirm_password: string;
-};
-
-type SigninData = {
-  email: string;
-  password: string;
-};
-
-type ValidationData = SigninData | SignupData;
+type ValidationData = UserCredentials | UserInfo;
 
 // Strategy interface
 interface ValidationStrategy {
@@ -22,8 +14,8 @@ interface ValidationStrategy {
 
 // Strategy concrete implementation: Sign In
 class SigninValidation implements ValidationStrategy {
-  validate(data: SigninData): Partial<SigninData> | boolean {
-    const errors: Partial<SigninData> = {};
+  validate(data: UserCredentials): Partial<UserCredentials> | boolean {
+    const errors: Partial<UserCredentials> = {};
 
     if (!data.email.trim()) {
       errors.email = "Your email address is required";
@@ -44,8 +36,8 @@ class SigninValidation implements ValidationStrategy {
 
 // Strategy concrete implementation: Sign Up
 class SignupValidation implements ValidationStrategy {
-  validate(data: SignupData): Partial<SignupData> | boolean {
-    const errors: Partial<SignupData> = {};
+  validate(data: UserInfo): Partial<UserInfo> | boolean {
+    const errors: Partial<UserInfo> = {};
 
     if (!data.first_name.trim()) {
       errors.first_name = "Your first name is required";

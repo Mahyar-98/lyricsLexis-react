@@ -107,6 +107,13 @@ button > a {
   padding: 0.6em 1.2em;
 }
 
+button.save svg {
+  fill: green;
+}
+button.remove svg {
+  fill: maroon;
+}
+
 a {
   text-decoration: none;
   color: inherit;

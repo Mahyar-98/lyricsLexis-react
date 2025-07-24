@@ -1,4 +1,3 @@
-import "../styles/library.css";
 import { useState, useEffect } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -15,6 +14,9 @@ import SavedSong from "@/types/SavedSong";
 
 // Import utils
 import sortItems from "@/utils/sortItems";
+
+// Import styles
+import "@/styles/library.css";
 
 interface OutletContextType {
   session: Session;

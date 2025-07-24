@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
-import { signinValidator } from "../utils/ValidationStrategy";
 
 // Import types
 import UserCredentials from "@/types/UserCredentials";
 import Session from "@/types/Session";
+
+// Import utils
+import { signinValidator } from "@/utils/validationStrategy";
 
 interface OutletContextType {
   setSession: (session: Session) => void;

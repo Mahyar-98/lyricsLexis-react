@@ -1,4 +1,3 @@
-import "../styles/home.css";
 import React from "react";
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
@@ -9,6 +8,9 @@ import Lyrics from "./Lyrics";
 
 // Import types
 import Song from "@/types/Song";
+
+// import styles
+import "@/styles/home.css";
 
 interface OutletContextType {
   dicOpen: boolean;

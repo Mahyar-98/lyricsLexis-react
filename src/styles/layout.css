@@ -115,7 +115,8 @@ header .nav {
 }
 
 .side-nav svg {
-  width: 15px;
+  width: 1.2em;
+  height: auto;
 }
 
 .side-nav p {
@@ -160,7 +161,8 @@ footer a {
 }
 
 footer svg {
-  width: 20px;
+  width: 1.7em;
+  height: auto;
   fill: var(--header-color);
 }
 
@@ -196,10 +198,5 @@ footer svg {
   header nav ul li {
     display: inline-block;
     font-weight: bold;
-  }
-
-  header svg {
-    width: 20px;
-    height: 20px;
   }
 }

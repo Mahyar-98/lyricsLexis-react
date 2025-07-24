@@ -63,7 +63,7 @@ VITE_BACKEND_URL=your_backend_url
 npm run dev
 ```
 
-Open your browser at http://localhost:3000 to use the app!
+Open your browser at http://localhost:5173 to use the app!
 
 > **Note:**  
 > You must clone and run the backend server locally at the same time as the frontend for the app to work as expected.  

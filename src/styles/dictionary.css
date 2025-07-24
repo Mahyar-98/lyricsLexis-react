@@ -50,11 +50,9 @@
   opacity: 0.8;
 }
 
-button.save {
-  fill: green;
-}
-button.remove {
-  fill: maroon;
+.save-unsave-btn svg {
+  width: 2.2em;
+  height: auto;
 }
 
 .learned-cb input {
@@ -155,7 +153,7 @@ button.remove {
 }
 
 .speaker {
-  width: 30px;
+  width: 35px;
   border: none;
   display: flex;
   align-items: center;
@@ -167,6 +165,8 @@ button.remove {
 
 .speaker svg {
   fill: maroon;
+  width: 100%;
+  height: auto;
 }
 
 .definition {
