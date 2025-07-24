@@ -47,7 +47,7 @@ const About = () => {
             <b>Please note:</b> LyricsLexis is not a commercial project and
             relies on two external free APIs—
             <a href="https://some-random-api.com/" target="__blank">
-              Some Random Api
+              Some Random API
             </a>{" "}
             for lyrics and{" "}
             <a href="https://dictionaryapi.dev/" target="__blank">

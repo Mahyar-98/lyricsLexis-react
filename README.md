@@ -1,36 +1,96 @@
-# LyricsLexis
+# 🎵 LyricsLexis
 
-**Overview**  
-LyricsLexis is a personal educational React project designed to help English learners expand their vocabulary through music. If you’re a music enthusiast who loves learning languages through songs, this app is perfect for you. With LyricsLexis, you can look up the lyrics to any song you’re listening to, and if you come across any word you don’t know, just click on the word to see its dictionary definition. Check it out [here](https://sweet-sunflower-59001b.netlify.app/).
+## Overview
 
-You could also check out the [backend repository](https://github.com/Mahyar-98/lyricsLexis-backend) which is built using Express.js.
+**LyricsLexis** is a personal educational MERN stack project designed to help English learners expand their vocabulary through song lyrics.  
+If you’re a music enthusiast who loves learning languages through songs, this app is perfect for you.
 
-**Features**  
-- Look up the lyrics to your favorite songs.
-- Look up the definitions of unfamiliar words.
-- Practice and learn new words with phonetics, pronunciation, examples, synonyms, and antonyms.
-- Create an account for library feautures
-- Save songs to revisit later.
-- Save words for later study.
-- Use your library to navigate through all your saved words and songs.
-- Add notes to your saved words or mark them as learned words.
+With LyricsLexis, you can look up the lyrics to any song you’re listening to, and if you come across a word you don’t know, just click on it to see its dictionary definition.
 
-**Running the Project**  
-To run the project locally, follow these steps:
-1. Clone the project repository to your local machine.
-2. Navigate to the project directory.
-3. Run `npm install` in your command line to install dependencies.
-4. Run `npm run dev` to start the development server.
-5. Open your browser and go to `http://localhost:3000` to view the project.
+ **Live Demo**: [https://sweet-sunflower-59001b.netlify.app/](https://sweet-sunflower-59001b.netlify.app/)  
+ **Backend Repository (Express.js)**: [https://github.com/Mahyar-98/lyricsLexis-backend](https://github.com/Mahyar-98/lyricsLexis-backend)
 
-**Dependencies**  
-- React
-- React-DOM
-- TypeScript
+---
+
+##  Features
+
+- 🔍 Look up the lyrics to your favorite songs  
+- 📖 Click on unfamiliar words to get definitions  
+- 🧠 Learn new words with:
+  - Phonetics
+  - Pronunciation
+  - Usage examples
+  - Synonyms & antonyms
+- 🧑‍💼 Create an account to:
+  - Save songs for later
+  - Save words for study
+  - Add notes or mark words as "learned"
+  - Navigate through your saved songs and words
+
+---
+
+## Running the Project Locally
+
+To run the project on your local machine:
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Mahyar-98/lyricsLexis-react.git
+cd lyricsLexis-react
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Set Up Environment Variables
+
+Create a `.env` file in the root directory and add the following:
+
+```env
+VITE_SOME_RANDOM_API_TOKEN=your_token_here
+VITE_BACKEND_URL=your_backend_url
+```
+
+🔐 You can register and obtain an API token at https://some-random-api.com
+
+### 4. Start the development server
+
+```bash
+npm run dev
+```
+
+Open your browser at http://localhost:3000 to use the app!
+
+> **Note:**  
+> You must clone and run the backend server locally at the same time as the frontend for the app to work as expected.  
+> The backend source code and setup instructions can be found in the [backend repository](https://github.com/Mahyar-98/lyricsLexis-backend).
+
+
+## Tech Stack
+
+### Frontend
+- React  
+- TypeScript  
 - Vite
-- ESLint
-- Prettier
-- Luxon
 
-Enjoy expanding your vocabulary with LyricsLexis!
+### Backend (Separate Repo)
+- Node.js  
+- Express.js  
+- MongoDB  
 
+### Utilities
+- ESLint  
+- Prettier  
+- Luxon (for date/time formatting)
+
+## Author
+
+**Mahyar Erfanian**
+
+- 🔗 [Portfolio](https://mahyarerfanian.com/)
+- 🔗 [LinkedIn](https://www.linkedin.com/in/mahyar-erfanian-67968279/)
+- 🔗 [GitHub](https://github.com/Mahyar-98)
