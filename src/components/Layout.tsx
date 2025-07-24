@@ -36,9 +36,12 @@ const Layout = () => {
     if (token) {
       verifyToken(token)
         .then((res) => setSession(res)) // Set logged-in state to true if token is present
-        .catch((err) =>
-          console.error("Token verification failed in Layout component: ", err),
-        );
+        .catch((err) => {
+          console.error("Token verification failed in Layout component: ", err);
+          localStorage.removeItem("token");
+          setSession(null);
+          navigate("/signin");
+        });
     }
   }, []);
 
@@ -76,6 +79,21 @@ const Layout = () => {
     navigate("/signin");
   };
 
+  const PUBLIC_NAV_ITEMS = [
+    { to: "/", label: "Home", icon: <IoMdHome /> },
+    { to: "/about", label: "About", icon: <FaInfoCircle /> },
+  ];
+
+  const AUTH_NAV_ITEMS = [
+    { to: "/library", label: "Library", icon: <FaBook /> },
+    { action: "signout", label: "Sign Out", icon: <FaSignOutAlt /> },
+  ];
+
+  const GUEST_NAV_ITEMS = [
+    { to: "/signin", label: "Sign In", icon: <FaSignInAlt /> },
+    { to: "/signup", label: "Sign Up", icon: <IoPersonAdd /> },
+  ];
+
   return (
     <div className="layout">
       <header>
@@ -97,34 +115,32 @@ const Layout = () => {
           </button>
           <nav className="nav">
             <ul>
-              <li>
-                <Link to="/">home</Link>
-              </li>
-              <li>
-                <Link to="/about">about</Link>
-              </li>
+              {PUBLIC_NAV_ITEMS.map((item) => (
+                <li>
+                  <Link to={item.to}>{item.label}</Link>
+                </li>
+              ))}
             </ul>
-            {!session ? (
-              <ul>
-                <li>
-                  <Link to="/signin">sign in</Link>
+            <ul>
+              {(session ? AUTH_NAV_ITEMS : GUEST_NAV_ITEMS).map((item) => (
+                <li key={item.label}>
+                  {"action" in item ? (
+                    <button
+                      onClick={() => {
+                        handleSignOut();
+                        handleLinkClick();
+                      }}
+                    >
+                      {item.label}
+                    </button>
+                  ) : (
+                    <Link to={item.to!} onClick={handleLinkClick}>
+                      {item.label}
+                    </Link>
+                  )}
                 </li>
-                <li>
-                  <Link to="/signup">sign up</Link>
-                </li>
-              </ul>
-            ) : (
-              <ul>
-                <li>
-                  <Link to="/library">library</Link>
-                </li>
-                <li>
-                  <a href="#" onClick={handleSignOut}>
-                    sign out
-                  </a>
-                </li>
-              </ul>
-            )}
+              ))}
+            </ul>
           </nav>
         </div>
       </header>
@@ -132,60 +148,38 @@ const Layout = () => {
         <nav>
           <h2>LyricsLexis</h2>
           <ul>
-            <li>
-              <Link to="/" onClick={handleLinkClick}>
-                <IoMdHome />
-                <p>Home</p>
-              </Link>
-            </li>
-            <li>
-              <Link to="about" onClick={handleLinkClick}>
-                <FaInfoCircle />
-                <p>About</p>
-              </Link>
-            </li>
+            {PUBLIC_NAV_ITEMS.map((item) => (
+              <li>
+                <Link to={item.to}>
+                  {item.icon}
+                  <p>{item.label}</p>
+                </Link>
+              </li>
+            ))}
           </ul>
           <hr />
           <ul>
-            {!session ? (
-              <>
-                <li>
-                  <Link to="signin" onClick={handleLinkClick}>
-                  <FaSignInAlt />
-                    <p>sign in</p>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="signup" onClick={handleLinkClick}>
-                  <IoPersonAdd />
-                    <p>sign up</p>
-                  </Link>
-                </li>
-              </>
-            ) : (
-              <>
-                <li>
-                  <Link to="library" onClick={handleLinkClick}>
-                    <FaBook />
-                    <p>library</p>
-                  </Link>
-                </li>
-                <li>
-                  <a
-                    href="#"
+            {(session ? AUTH_NAV_ITEMS : GUEST_NAV_ITEMS).map((item) => (
+              <li key={item.label}>
+                {"action" in item ? (
+                  <button
                     onClick={() => {
                       handleSignOut();
                       handleLinkClick();
                     }}
                   >
-                    <FaSignOutAlt />
-                    <p>sign out</p>
-                  </a>
-                </li>
-              </>
-            )}
+                    {item.icon}
+                    <p>{item.label}</p>
+                  </button>
+                ) : (
+                  <Link to={item.to!} onClick={handleLinkClick}>
+                    {item.icon}
+                    <p>{item.label}</p>
+                  </Link>
+                )}
+              </li>
+            ))}
           </ul>
-
         </nav>
       </div>
       {navOpen && (
