@@ -3,8 +3,8 @@ import { useOutletContext, useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 
 // Import components
-import Dictionary from "./Dictionary";
-import Lyrics from "./Lyrics";
+import Dictionary from "../features/Dictionary";
+import Lyrics from "../features/Lyrics";
 
 // Import types
 import Session from "@/types/Session";

@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
 // Import components
-import Loading from "./Loading";
+import Loading from "../Loading";
+import Footer from "./Footer";
 
 // Import types
 import Session from "@/types/Session";
@@ -19,7 +20,6 @@ import { FaInfoCircle, FaSignOutAlt } from "react-icons/fa";
 import { FaSignInAlt } from "react-icons/fa";
 import { FaBook } from "react-icons/fa";
 import { IoPersonAdd } from "react-icons/io5";
-import { FaGithub } from "react-icons/fa";
 
 const Layout = () => {
   const [loading, setLoading] = useState(false);
@@ -201,19 +201,7 @@ const Layout = () => {
           }}
         />
       </main>
-      <footer>
-        <div>
-          <p>Check out my GitHub:</p>
-          <a
-            href="https://github.com/Mahyar-98"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Mahyar's GitHub Profile"
-          >
-            <FaGithub />
-          </a>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

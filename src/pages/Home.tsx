@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 // Import components
-import Dictionary from "./Dictionary";
-import Lyrics from "./Lyrics";
+import Dictionary from "../features/Dictionary";
+import Lyrics from "../features/Lyrics";
 
 // Import types
 import Song from "@/types/Song";
