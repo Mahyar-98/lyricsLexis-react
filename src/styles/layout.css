@@ -17,7 +17,7 @@ header > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 2rem;
+  height: 3rem;
 }
 
 header h1 {
@@ -61,6 +61,29 @@ header .nav {
 
 .side-nav.show {
   left: 0;
+}
+
+.nav li {
+  display: flex;
+  align-items: center;
+}
+
+.nav button {
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: transparent;
+  border: #555 2px solid;
+  padding: 0.4em 1em;
+}
+.nav button:hover {
+  background-color: #555;
+}
+
+.side-nav button {
+  width: 100%;
+  padding: 1em;
+  display: flex;
+  gap: 1.2em;
 }
 
 .overlay {
